@@ -1,9 +1,12 @@
 #------------------------------------------------------------------------------
 #
-#    AOUTHORS:    Parshan Pakiman  | https://parshanpakiman.github.io/homepage/
-#                Selva Nadarajah  | https://selvan.people.uic.edu/
+#	AOUTHORS:    Parshan Pakiman
+#		         Selva Nadarajah 
+#
+#	HOMEPAGES:   https://parshanpakiman.github.io/homepage/ 
+#                https://selvan.people.uic.edu/
 #                         
-#    Licensing Information: The MIT License
+#	LICENSE: The MIT License
 #------------------------------------------------------------------------------
 
 
