@@ -1,7 +1,7 @@
 """
 -------------------------------------------------------------------------------
 
-    Authors:    Parshan Pakiman  | https://parshanpakiman.github.io/homepage/
+    Authors:    Parshan Pakiman  | [https://parshanpakiman.github.io/homepage]
                 Selva Nadarajah  | https://selvan.people.uic.edu/
                          
     Licensing Information: The MIT License
