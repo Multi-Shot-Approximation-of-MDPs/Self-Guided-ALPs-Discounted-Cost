@@ -1,12 +1,12 @@
-#------------------------------------------------------------------------------
-#
-#	AOUTHORS:    Parshan Pakiman, Selva Nadarajah 
-#
-#	HOMEPAGES:   https://parshanpakiman.github.io/homepage/ 
-#                https://selvan.people.uic.edu/
-#                         
-#	LICENSE: The MIT License
-#------------------------------------------------------------------------------
+"""
+-------------------------------------------------------------------------------
+
+    Authors:    Parshan Pakiman  | https://parshanpakiman.github.io/homepage/
+                Selva Nadarajah  | https://selvan.people.uic.edu/
+                         
+    Licensing Information: The MIT License
+-------------------------------------------------------------------------------
+"""
 
 
 #------------------------------------------------------------------------------
