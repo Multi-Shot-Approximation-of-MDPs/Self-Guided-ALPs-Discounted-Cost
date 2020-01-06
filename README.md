@@ -1,8 +1,9 @@
 # Self-guided Approximate Linear Programs
 
-The paper is avilable at https://ssrn.com/abstract=3512665.
+###### The paper correpsoding to this repositotry is avilable at [SSRN](https://ssrn.com/abstract=3512665).
 
-Abstract:
+##### **Abstract** 
+
 Approximate linear programs (ALPs) are well-known models based on value function approximations (VFAs)
 to obtain heuristic policies and lower bounds on the optimal policy cost of Markov decision processes (MDPs).
 The ALP VFA is a linear combination of predefined basis functions that are chosen using domain knowledge
