@@ -1,7 +1,6 @@
 #------------------------------------------------------------------------------
 #
-#	AOUTHORS:    Parshan Pakiman
-#		         Selva Nadarajah 
+#	AOUTHORS:    Parshan Pakiman, Selva Nadarajah 
 #
 #	HOMEPAGES:   https://parshanpakiman.github.io/homepage/ 
 #                https://selvan.people.uic.edu/
