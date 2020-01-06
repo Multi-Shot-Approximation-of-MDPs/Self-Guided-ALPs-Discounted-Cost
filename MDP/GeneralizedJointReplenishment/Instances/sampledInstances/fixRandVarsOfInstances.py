@@ -1,11 +1,12 @@
-#!/usr/bin/env python3
-# -*- coding: utf-8 -*-
 """
-Created on Mon Apr  1 20:59:54 2019
+-------------------------------------------------------------------------------
 
-@author: parshan
+    Authors:    Parshan Pakiman  | https://parshanpakiman.github.io/homepage/
+                Selva Nadarajah  | https://selvan.people.uic.edu/
+                         
+    Licensing Information: The MIT License
+-------------------------------------------------------------------------------
 """
-
 import numpy as np
 
 

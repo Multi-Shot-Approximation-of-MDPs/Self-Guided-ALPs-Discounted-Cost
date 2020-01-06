@@ -1,10 +1,11 @@
 """
-###############################################################################
-# Created: Parshan Pakiman  | https://parshanpakiman.github.io/homepage/
-#                           | http://business.uic.edu/faculty/parshan-pakiman
-#                          
-# Licensing Information: The MIT License
-###############################################################################
+-------------------------------------------------------------------------------
+
+    Authors:    Parshan Pakiman  | https://parshanpakiman.github.io/homepage/
+                Selva Nadarajah  | https://selvan.people.uic.edu/
+                         
+    Licensing Information: The MIT License
+-------------------------------------------------------------------------------
 """
 from BasisFunction.fourierBasisFunctions import FourierBasis
 from MDP.PerishableInventory.perishableInventory import PerishableInventoryPartialBacklogLeadTime 
@@ -28,7 +29,7 @@ def experimentSetup():
     
     #--------------------------------------------------------------------------
     # MDP configuration
-    mdp.update({'mdp_name'              :     'INS_1'})
+    mdp.update({'mdp_name'              :     'INS_0'})
     mdp.update({'type'                  :     PerishableInventoryPartialBacklogLeadTime})
     mdp.update({'dimX'                  :     3})
     mdp.update({'dimU'                  :     1})

@@ -1,10 +1,11 @@
 """
-###############################################################################
-# Created: Parshan Pakiman  | https://parshanpakiman.github.io/homepage/
-#                           | http://business.uic.edu/faculty/parshan-pakiman
-#                          
-# Licensing Information: The MIT License
-###############################################################################
+-------------------------------------------------------------------------------
+
+    Authors:    Parshan Pakiman  | https://parshanpakiman.github.io/homepage/
+                Selva Nadarajah  | https://selvan.people.uic.edu/
+                         
+    Licensing Information: The MIT License
+-------------------------------------------------------------------------------
 """
 import importlib,sys,os,time,textwrap
 from Algorithms.selfGuidedALP_GJR import SelfGuidedALP
@@ -30,7 +31,7 @@ if __name__== "__main__":
     
     #--------------------------------------------------------------------------
     # Print the algorithm header for a user
-    selfGuidedHeader(mdp['mdp_name'],"Generalized Joint Replenishment",124)    
+    selfGuidedHeader(mdp['mdp_name'],trial,"Generalized Joint Replenishment",124)    
     
     #--------------------------------------------------------------------------
     # Construct random stump basis functions
@@ -86,12 +87,7 @@ if __name__== "__main__":
         msg = 'WARNING! The number of initial state-action pairs used for solving ALP before performing constraint (row) generation  is low. ALP is unbounded. Please increase the number of samples, e.g., change the parameter intialContrSamples.'
         print('\n\n'+textwrap.TextWrapper(width=50).fill(text=msg)+'\n\n')
         sys.exit()
-        
-    #--------------------------------------------------------------------------
-    # Print the trial
-    print('~'*124)
-    print('{:{fill}^{w}}'.format('TRIAL ' + str(trial),fill=' ',w=124))
-    print('~'*124)
+
    
     """
         =======================================================================

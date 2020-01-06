@@ -1,10 +1,11 @@
 """
-###############################################################################
-# Created: Parshan Pakiman  | https://parshanpakiman.github.io/homepage/
-#                           | http://business.uic.edu/faculty/parshan-pakiman
-#                          
-# Licensing Information: The MIT License
-###############################################################################
+-------------------------------------------------------------------------------
+
+    Authors:    Parshan Pakiman  | https://parshanpakiman.github.io/homepage/
+                Selva Nadarajah  | https://selvan.people.uic.edu/
+                         
+    Licensing Information: The MIT License
+-------------------------------------------------------------------------------
 """
 import numpy as np
 import os,time,gc,sys,textwrap

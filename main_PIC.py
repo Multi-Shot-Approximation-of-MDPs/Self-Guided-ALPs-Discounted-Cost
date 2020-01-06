@@ -1,10 +1,11 @@
 """
-###############################################################################
-# Created: Parshan Pakiman  | https://parshanpakiman.github.io/homepage/
-#                           | http://business.uic.edu/faculty/parshan-pakiman
-#                          
-# Licensing Information: The MIT License
-###############################################################################
+-------------------------------------------------------------------------------
+
+    Authors:    Parshan Pakiman  | https://parshanpakiman.github.io/homepage/
+                Selva Nadarajah  | https://selvan.people.uic.edu/
+                         
+    Licensing Information: The MIT License
+-------------------------------------------------------------------------------
 """
 import time,sys,importlib
 import shutil
@@ -37,7 +38,7 @@ if __name__== "__main__":
     
     #--------------------------------------------------------------------------
     # Print the algorithm header for a user
-    selfGuidedHeader(mdp.mdpName,"Perishable Inventory Control", 216)     
+    selfGuidedHeader(mdp.mdpName,False,"Perishable Inventory Control", 216)     
     #--------------------------------------------------------------------------
     # The following code runs the constraint sampling algorithm and creates a 
     # huge matrix of ALP constraints. 
@@ -45,13 +46,13 @@ if __name__== "__main__":
         *** If you already saved your ALP constraints matrix as a '.npy' array,
             then you can comment out the following part. 
     """
-    # print('Performing constraint sampling ...')
-    # start_time = time.time()    
-    # getStateActionSamples(mdp,expInfo['cs'],iPath)
-    # print("ALP constraints are sampled in {:>5.4f} (s).".format(time.time() - start_time))    
-    # start_time = time.time()
-    # makeALP(mdp,bf,iPath)
-    # print("ALP components are generated in {:>5.4f} (m).".format((time.time() - start_time)/60)) # To minutes
+    print('Performing constraint sampling ...')
+    start_time = time.time()    
+    getStateActionSamples(mdp,expInfo['cs'],iPath)
+    print("ALP constraints are sampled in {:>5.4f} (s).".format(time.time() - start_time))    
+    start_time = time.time()
+    makeALP(mdp,bf,iPath)
+    print("ALP components are generated in {:>5.4f} (m).".format((time.time() - start_time)/60)) # To minutes
 
     #--------------------------------------------------------------------------
     # The following code creates object ALG that essentially allows us to call

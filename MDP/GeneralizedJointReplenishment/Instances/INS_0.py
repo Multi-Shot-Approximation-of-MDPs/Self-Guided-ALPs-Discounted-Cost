@@ -1,10 +1,11 @@
 """
-###############################################################################
-# Created: Parshan Pakiman  | https://parshanpakiman.github.io/homepage/
-#                           | http://business.uic.edu/faculty/parshan-pakiman
-#                          
-# Licensing Information: The MIT License
-###############################################################################
+-------------------------------------------------------------------------------
+
+    Authors:    Parshan Pakiman  | https://parshanpakiman.github.io/homepage/
+                Selva Nadarajah  | https://selvan.people.uic.edu/
+                         
+    Licensing Information: The MIT License
+-------------------------------------------------------------------------------
 """
 import numpy as np
 import os
@@ -51,7 +52,7 @@ def experimentSetup(trial):
     
     #--------------------------------------------------------------------------
     # MDP setting
-    mdp.update({ 'mdp_name'             :    'INS_1'})                          
+    mdp.update({ 'mdp_name'             :    'INS_0'})                          
     mdp.update({ 'type'                 :    GeneralizedJointReplenishment})
     mdp.update({ 'Adrr'                 :    ''})
     mdp.update({ 'trial'                :    ''})

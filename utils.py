@@ -1,10 +1,11 @@
 """
-###############################################################################
-# Created: Parshan Pakiman  | https://parshanpakiman.github.io/homepage/
-#                           | http://business.uic.edu/faculty/parshan-pakiman
-#                          
-# Licensing Information: The MIT License
-###############################################################################
+-------------------------------------------------------------------------------
+
+    Authors:    Parshan Pakiman  | https://parshanpakiman.github.io/homepage/
+                Selva Nadarajah  | https://selvan.people.uic.edu/
+                         
+    Licensing Information: The MIT License
+-------------------------------------------------------------------------------
 """
 import os,itertools
 import numpy as np
@@ -95,17 +96,22 @@ def whereIsElementInPowerSet(pSet,element):
 """
 Showing a message (i.e., instance number) to a user in a terminal.
 """
-def selfGuidedHeader(mdpName,applicationName,width):
-    header  = '{:{fill}^{w}}'.format('Self-guided Approximate Linear Programs',fill=' ',w=width)
-    title   = '{:{fill}^{w}}'.format(applicationName,fill=' ',w=width)
-    ins     = '{:{fill}^{w}}'.format("Solving Instance " + str(mdpName),fill=' ',w=width)
-
+def selfGuidedHeader(mdpName,trial,applicationName,width):
+    header      = '{:{fill}^{w}}'.format('Self-guided Approximate Linear Programs',fill=' ',w=width)
+    title       = '{:{fill}^{w}}'.format(applicationName,fill=' ',w=width)
+    ins         = '{:{fill}^{w}}'.format("Solving Instance " + str(mdpName),fill=' ',w=width)
+    trialMsg    = '{:{fill}^{w}}'.format("Trial  " + str(trial+1),fill=' ',w=width)
+    
     print('{:{fill}^{w}}'.format('-',fill='-',w=len(header)))
     print(header.upper())
     print('{:{fill}^{w}}'.format(' ',fill=' ',w=len(header)))
     print(title.upper())
     print('{:{fill}^{w}}'.format(' ',fill=' ',w=len(header)))
     print(ins.upper())
+    
+    if trial:
+        print('{:{fill}^{w}}'.format(' ',fill=' ',w=len(header)))
+        print(trialMsg.upper())
     print('{:{fill}^{w}}'.format('-',fill='-',w=len(header)))
     
     
@@ -113,15 +119,18 @@ def selfGuidedHeader(mdpName,applicationName,width):
 """
 Showing a message (i.e., instance number) to a user in a terminal.
 """
-def AK_Header(mdpName,applicationName,width):
-    header  = '{:{fill}^{w}}'.format('Adaptive basis function generation for GJR: Adelman and Klabjan 2012',fill=' ',w=width)
-    title   = '{:{fill}^{w}}'.format(applicationName,fill=' ',w=width)
-    ins     = '{:{fill}^{w}}'.format("Solving Instance " + str(mdpName),fill=' ',w=width)
-
+def AK_Header(mdpName,trial,applicationName,width):
+    header      = '{:{fill}^{w}}'.format('Adaptive basis function generation for GJR: Adelman and Klabjan 2012',fill=' ',w=width)
+    title       = '{:{fill}^{w}}'.format(applicationName,fill=' ',w=width)
+    ins         = '{:{fill}^{w}}'.format("Solving Instance " + str(mdpName),fill=' ',w=width)
+    trialMsg    = '{:{fill}^{w}}'.format("Trial  " + str(trial+1),fill=' ',w=width)
+    
     print('{:{fill}^{w}}'.format('-',fill='-',w=len(header)))
     print(header.upper())
     print('{:{fill}^{w}}'.format(' ',fill=' ',w=len(header)))
     print(title.upper())
     print('{:{fill}^{w}}'.format(' ',fill=' ',w=len(header)))
     print(ins.upper())
+    print('{:{fill}^{w}}'.format(' ',fill=' ',w=len(header)))
+    print(trialMsg.upper())
     print('{:{fill}^{w}}'.format('-',fill='-',w=len(header)))    
