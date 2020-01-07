@@ -20,7 +20,9 @@ listLibs = ['gurobipy',
             'math',
             'sampyl',
             'sys',
-            'textwrap']
+            'textwrap',
+            'shutil',
+            'importlib']
 notFound = []
 found    = []
 
