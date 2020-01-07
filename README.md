@@ -1,5 +1,6 @@
 # Self-guided Approximate Linear Programs
 ###### **Last update:** January 2020
+***
 ###### The paper correpsoding to this repositotry is avilable at [SSRN](https://ssrn.com/abstract=3512665).
 
 #### Overview:
