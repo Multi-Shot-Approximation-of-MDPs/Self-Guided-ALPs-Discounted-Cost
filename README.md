@@ -53,8 +53,9 @@ The code implements self-guided approximate linear programs for two challenging 
  ```
   ./run_PIC.sh
  ```
-  
+ 9. Congratulations, the code is properly set up. You can now run different instances of GJR and PIC. Also, the code can be used for solving new applications using self-guided approximate linear programs. 
 
+---
 #### **References:**  
 [1] Adelman, Daniel, and Diego Klabjan, *Computing near-optimal policies in generalized joint replenishment (2012)*. INFORMS Journal on Computing 24, no. 1 (2012): 148-164.
 
