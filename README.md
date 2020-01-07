@@ -1,7 +1,7 @@
 # Self-guided Approximate Linear Programs
 ###### **Last update:** January 2020
 ###### The manuscript correpsoding to this repositotry is avilable at [SSRN](https://ssrn.com/abstract=3512665).
-###### **Related topics:** Approximate dynamic programming, Approximate linear programming, Reinforcement learning, Random Fourier features, Inventory management
+###### **Topics:** Approximate dynamic programming, Approximate linear programming, Reinforcement learning, Random Fourier features, Inventory management
 ---
 
 ### Overview:
