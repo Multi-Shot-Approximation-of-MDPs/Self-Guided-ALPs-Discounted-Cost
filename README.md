@@ -13,7 +13,7 @@ This repository provides an implementation of self-guided approximate linear pro
 
 The code implements self-guided approximate linear programs for two challenging applications. The first one is a variant of the perishable inventory control (PIC) problem, which gives rise to a challenging discounted cost infinite-horizon MDP. The second application relates to generalized joint replenishment (GJR), which [1] model as an averaged-cost infinite horizon semi-MDP and approximately solve using an ALP with basis functions generated in a dynamic manner exploiting problem-specific structure. An implementation of this benchmark is also provided in this repository.
 
-#### **How to use this code?** 
+### **How to use this code?** 
  1. Download this repository on your local system and extract the zip file.
  2. Make sure that python 3.7 is installed on your machine.
  3. This repository depends on the following packages:
@@ -39,9 +39,17 @@ The code implements self-guided approximate linear programs for two challenging 
  ```
   conda install gurobi=8.1
  ```
- 5. To check if the code is propery set up on your sysytem, you can run the following code which solves a test instance of GJR.
+ 6. Give read-and-write permission to two files *run_GJR.sh* and *run_PIC.sh*. For example, in Ubuntu or macOS, you can use the following code in the terminal to give permission.
+ ```
+  chmod 777 run_*.sh
+ ```
+ 7. To check if the code is properly set up on your system, you can run the following code which solves a test instance of GJR application.
  ```
   ./run_GJR.sh
+ ```
+ 8. Also, a test instance of the PIC application can be run using the following code.
+ ```
+  ./run_PIC.sh
  ```
   
 
