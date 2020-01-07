@@ -1,7 +1,8 @@
 # Self-guided Approximate Linear Programs
 ###### **Last update:** January 2020
-***
 ###### The paper correpsoding to this repositotry is avilable at [SSRN](https://ssrn.com/abstract=3512665).
+---
+
 
 #### Overview:
 Computing high-quality control policies in sequential decision making problems is an important task across several application domains. Markov decision processes (MDPs) provide a powerful framework to find optimal policies in such problems but are often intractable to solve exactly due to known curses of dimensionality. Therefore, approximate dynamic programming (ADP) and reinforcement learning (RL) techniques are developed for managing challenging MDPs. The are various ADP/RL methods that use value function approximations (VFAs) to handle the MDPs with large state space.
