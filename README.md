@@ -2,28 +2,21 @@
 ###### **Last update:*** January 2020
 
 #### Overview:
-This repository provides an implementation of self-guided approximate linear programs, which is an algorithm developed in [1] for solving Markov decision processes (MDPs) with continuous state and action spaces. This algorithm computes value function approximations (VFAs), control policies, and optimality gaps for a given MDP using a novel variant of the approximate linear programming (ALP; [2]) approach to MDPs. In a standard implementation of ALPs, a user should specify basis functions (features) defining a VFA, that typically requires domain knowledge specific to applications. Basis function selection is a potential bottleneck when using ALPs. Self-guided approximate linear programs sidestep the need for basis function selection in ALPs by embedding random basis functions [1] in a sequence of ALPs with increasing numbers of basis functions. Therefore, self-guided approximate linear programs is an application-agnostic approach for solving high-dimensional MDPs that bypasses the potential need for basis function selection by an inexpensive sampling of random basis functions.
+Computing high-quality control policies in sequential decision making problems is an important task across several application domains. Markov decision processes (MDPs) provide a powerful framework to find optimal policies in such problems but are often intractable to solve exactly due to known curses of dimensionality. Value function approximation (VFA) is a popular method in approximate dynamic programming (ADP) and reinforcement learning (RL) to manage high-dimensional MDPs.
 
+Approximate linear programming is a known ADP/RL approach for computing VFAs that has been applied to a wide variety of domains, including operations research, reinforcement learning, and artificial intelligence. VFAs in an approximate linear program (ALP) are represented as a linear combination of functions, referred to as basis functions, defined on the MDP state space. Solving ALP thus provides the (linear combination) weights associated with basis functions defining a VFA, which can be used to compute **control policy** and **its optimality gap**.
 
+This repository provides an implementation of self-guided approximate linear programs, which is an algorithm developed in [1] for solving MDPs with continuous state and action spaces. This algorithm computes VFAs, control policies, and optimality gaps for a given MDP using a novel variant of the ALPs. In a standard implementation of ALP, a user should specify basis functions (features) defining a VFA, that typically requires domain knowledge specific to applications. Basis function selection is a potential bottleneck when using ALP. Self-guided approximate linear programs sidestep the need for such basis function selection in ALP by embedding random basis functions [3] in a sequence of ALPs with increasing numbers of basis functions. Therefore, self-guided approximate linear programs is an application-agnostic approach for solving high-dimensional MDPs that bypasses the potential need for basis function selection by an inexpensive sampling of random basis functions. 
 
-##### **Related topics:**  
+In this code, we apply self-guided approximate linear programs to two challenging applications. The first one is a variant of the perishable inventory control (PIC) problem considered in [Karaesmen et al. (2011)], which gives rise to a challenging discounted cost infinite-horizon MDP. The second application we consider relates to generalized joint replenishment (GJR), which [Adelman and Klabjan (2012)] model as an averaged-cost infinite horizon semi-MDP and approximately solve using an ALP with basis functions generated in a dynamic manner exploiting problem-specific structure. We implemented this approach in this repository.
+
+#### **Related topics:**  
   * Approximate dynamic programming,
   * Approximate linear programming,
   * Reinforcement learning,
   * Random Fourier features,
   * Inventory management
 
-### Introduction
-Computing high-quality control policies in sequential decision making problems is an important task across several application domains. Markov decision processes (MDPs) provide a powerful framework to find optimal policies in such problems but are often intractable to solve exactly due to known curses of dimensionality. Value function approximation (VFA) is a popular method in approximate dynamic programming (ADP) and reinforcement learning (RL) to manage high-dimensional MDPs.
-
-Approximate linear programming is a known ADP/RL approach for computing VFAs that has been applied to a wide variety of domains, including operations research, reinforcement learning, and artificial intelligence. VFAs in an approximate linear program (ALP) are represented as a linear combination of functions, referred to as basis functions, defined on the MDP state space. Solving ALP thus provides the (linear combination) weights associated with basis functions defining a VFA, which can be used to compute **control policy** and **its optimality gap**.
-
-In a standard impelementation of ALP, a user specifies the choice of basis functions, which can ponteitally reuire domeain knowledge specific to application. This choice affect ALP policies perfromance and nessciates modifying basis functinos if ALP policy is poor.
-
-
-
-
-Self-guided Approximate Linear Programs (ALPs) is an 
 
 
 
