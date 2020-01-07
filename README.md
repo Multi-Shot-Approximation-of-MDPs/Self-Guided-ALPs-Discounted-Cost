@@ -31,6 +31,8 @@ The code implements self-guided approximate linear programs for two challenging 
     * itertools
     * multiprocessing
     * functools
+    * shutil
+    * importlib
  4. Please run the following code in your terminal to see which of the above Python libraries are missing on your machine.
  ```
   python checkLibraries.py 
