@@ -1,4 +1,34 @@
 # Self-guided Approximate Linear Programs
+###### **Last update:*** January 2020
+
+######
+
+###### **Keywords:**  
+  * Approximate dynamic programming,
+  * Approximate linear programming,
+  * Reinforcement learning,
+  * Random Fourier features,
+  * Inventory management
+
+### Introduction
+Computing high-quality control policies in sequential decision making problems is an important task across several application domains. Markov decision processes (MDPs) provide a powerful framework to find optimal policies in such problems but are often intractable to solve exactly due to known curses of dimensionality. Value function approximation (VFA) is a popular method in approximate dynamic programming (ADP) and reinforcement learning (RL) to manage high-dimensional MDPs.
+
+Approximate linear programming is a known ADP/RL approach for computing VFAs that has been applied to a wide variety of domains, including operations research, reinforcement learning, and artificial intelligence. VFAs in an approximate linear program (ALP) are represented as a linear combination of functions, referred to as basis functions, defined on the MDP state space. Solving ALP thus provides the (linear combination) weights associated with basis functions defining a VFA, which can be used to compute **control policy** and **its optimality gap**.
+
+In a standard impelementation of ALP, a user specifies the choice of basis functions, which can ponteitally reuire domeain knowledge specific to application. This choice affect ALP policies perfromance and nessciates modifying basis functinos if ALP policy is poor.
+
+
+
+
+Self-guided Approximate Linear Programs (ALPs) is an 
+
+
+
+
+
+
+
+
 
 ###### The paper correpsoding to this repositotry is avilable at [SSRN](https://ssrn.com/abstract=3512665).
 
@@ -20,3 +50,18 @@ policy fluctuations and improve the optimality gaps from an ALP approach that em
 tailored to the former application, and (ii) deliver optimality gaps that are comparable to a known adaptive
 basis function generation approach targeting the latter application. More broadly, our methodology provides
 application-agnostic policies and lower bounds to benchmark approaches that exploit application structure.
+
+
+##### **How to use this code?** 
+
+
+
+1. Make sure that Python 3.7 is already installed in your machine.
+2. Run the configure.py to see list of python libraries missing on your machine. Likely gurobipy and sampyl are the missing libraries. Please install then from the following links
+  sampyl: http://mcleonard.github.io/sampyl/
+  gurobipy: https://www.gurobi.com/gurobi-and-anaconda-for-windows/
+  
+  
+  # Line 23 of ALPSolver.py
+  # run_GJR.sh
+  # The code has ben tested on Gurobi 8.1. conda install gurobi=8.1
