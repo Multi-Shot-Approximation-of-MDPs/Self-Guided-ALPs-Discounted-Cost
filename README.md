@@ -1,9 +1,12 @@
 # Self-guided Approximate Linear Programs
 ###### **Last update:*** January 2020
 
-######
+#### Overview:
+This repository provides an implementation of self-guided approximate linear programs, which is an algorithm developed in [1] for solving Markov decision processes (MDPs) with continuous state and action spaces. This algorithm computes value function approximations (VFAs), control policies, and optimality gaps for a given MDP using a novel variant of the approximate linear programming (ALP; [2]) approach to MDPs. In a standard implementation of ALPs, a user should specify basis functions (features) defining a VFA, that typically requires domain knowledge specific to applications. Basis function selection is a potential bottleneck when using ALPs. Self-guided approximate linear programs sidestep the need for basis function selection in ALPs by embedding random basis functions [1] in a sequence of ALPs with increasing numbers of basis functions. Therefore, self-guided approximate linear programs is an application-agnostic approach for solving high-dimensional MDPs that bypasses the potential need for basis function selection by an inexpensive sampling of random basis functions.
 
-###### **Keywords:**  
+
+
+##### **Related topics:**  
   * Approximate dynamic programming,
   * Approximate linear programming,
   * Reinforcement learning,
