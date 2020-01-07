@@ -57,10 +57,10 @@ Instances from two applications are used for testing. The first one is a variant
 
 ---
 #### **References:**  
-[1] Adelman, Daniel, and Diego Klabjan, *Computing near-optimal policies in generalized joint replenishment (2012)*. INFORMS Journal on Computing 24, no. 1 (2012): 148-164.
+[1] Adelman, Daniel, and Diego Klabjan, *Computing near-optimal policies in generalized joint replenishment (2012)*. INFORMS Journal on Computing 24, no. 1: 148-164.
 
 [2] Pakiman, Parshan and Nadarajah, Selvaprabu and Soheili, Negar and Lin, Qihang, *Self-guided Approximate Linear Programs (2020)*. Available at SSRN: https://ssrn.com/abstract=3512665.
 
-[3] Rahimi, Ali, and Benjamin Recht, *Uniform approximation of functions with random bases (2008)*. In 2008 46th Annual Allerton Conference on Communication, Control, and Computing, pp. 555-561. IEEE, 2008.
+[3] Rahimi, Ali, and Benjamin Recht, *Uniform approximation of functions with random bases (2008)*. In 2008 46th Annual Allerton Conference on Communication, Control, and Computing, pp. 555-561. IEEE.
 
 [4] Lin, Qihang and Nadarajah, Selvaprabu and Soheili, Negar, *Revisiting approximate linear programming: Constraint-violation learning with applications to inventory control and energy storage (2019)*. Management Science, Forthcoming. 
