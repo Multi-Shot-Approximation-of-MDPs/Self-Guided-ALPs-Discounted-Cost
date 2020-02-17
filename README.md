@@ -37,7 +37,7 @@ Instances from two applications are used for testing. The first one is a variant
  ```
   python checkLibraries.py 
  ```
- 5. Typically, two packages *gurobipy* and *sampyl* will be missing. To install these libraries please visit [GUROBI](https://www.gurobi.com/gurobi-and-anaconda-for-windows/) and [SAMPYL](https://github.com/mcleonard/sampyl). **Please ensure that version 8.1 of Gurobi is set up in your sysyte.** If you are using conda enviroment, you can use the following code to install Gurobi 8.1:
+ 5. Typically, two packages *gurobipy* and *sampyl* will be missing. To install these libraries please visit [GUROBI](https://www.gurobi.com/gurobi-and-anaconda-for-windows/) and [SAMPYL](https://github.com/mcleonard/sampyl). **Please ensure that version 8.1 of Gurobi is set up on your machine.** If you are using conda enviroment, you can use the following code to install Gurobi 8.1:
  ```
   conda install gurobi=8.1
  ```
