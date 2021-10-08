@@ -19,7 +19,7 @@ Instances from two applications are used for testing. The first one is a variant
     * sys
  3. Please run the following code in your terminal to see if all needed Python libraries are installed on your machine or not.
  ```
-  python checkLibraries.py 
+  python3.8 checkLibraries.py 
  ```
  4. Typically, two packages *gurobipy* and *sampyl* will be missing. To install these libraries please visit [GUROBI](https://www.gurobi.com/gurobi-and-anaconda-for-windows/) and [SAMPYL](https://github.com/mcleonard/sampyl). 
  5. To check if the code is properly set up on your system, you can run the following code which solves a test instance of the GJR application.
