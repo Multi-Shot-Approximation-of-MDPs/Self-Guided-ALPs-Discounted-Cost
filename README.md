@@ -15,45 +15,18 @@ Instances from two applications are used for testing. The first one is a variant
 
 ### **How to use this code?** 
  1. Download this repository on your local system and extract the zip file.
- 2. Make sure that python 3.7 is installed on your machine.
- 3. This repository depends on the following packages:
-    * numpy
-    * scipy
-    * gurobipy (**version 8.1**)
-    * pandas
-    * sampyl
-    * math
-    * time
-    * os
-    * gc
+ 2. Make sure that python 3.8 or above is installed on your machine.
     * sys
-    * textwrap
-    * itertools
-    * multiprocessing
-    * functools
-    * shutil
-    * importlib
- 4. Please run the following code in your terminal to see which of the above Python libraries are missing on your machine.
+ 3. Please run the following code in your terminal to see if all needed Python libraries are installed on your machine or not.
  ```
   python checkLibraries.py 
  ```
- 5. Typically, two packages *gurobipy* and *sampyl* will be missing. To install these libraries please visit [GUROBI](https://www.gurobi.com/gurobi-and-anaconda-for-windows/) and [SAMPYL](https://github.com/mcleonard/sampyl). **Please ensure that version 8.1 of Gurobi is set up on your machine.** If you are using conda enviroment, you can use the following code to install Gurobi 8.1:
+ 4. Typically, two packages *gurobipy* and *sampyl* will be missing. To install these libraries please visit [GUROBI](https://www.gurobi.com/gurobi-and-anaconda-for-windows/) and [SAMPYL](https://github.com/mcleonard/sampyl). 
+ 5. To check if the code is properly set up on your system, you can run the following code which solves a test instance of the GJR application.
  ```
-  conda install gurobi=8.1
+  python3.8 main_PIC.py
  ```
- 6. Give read-and-write permission to two files *run_GJR.sh* and *run_PIC.sh*. For example, in Ubuntu or macOS, you can use the following code in the terminal to give permission.
- ```
-  chmod 777 run_*.sh
- ```
- 7. To check if the code is properly set up on your system, you can run the following code which solves a test instance of the GJR application.
- ```
-  ./run_GJR.sh
- ```
- 8. Also, a test instance of the PIC application can be run using the following code.
- ```
-  ./run_PIC.sh
- ```
- 9. Congratulations, the code is properly set up. You can now run different instances of GJR and PIC. The code can also be used for solving new applications using self-guided approximate linear programs. 
+ 6. Congratulations, the code is properly set up. You can now run different instances of GJR and PIC. The code can also be used for solving new applications using self-guided approximate linear programs. 
 
 ---
 #### **References:**  
