@@ -18,6 +18,7 @@ Approximate linear programs (ALPs) are well-known models based on value function
  5. To check if the code is properly set up on your system, you can run the following code which solves a test instance of the GJR application.
  ```
   python3.8 main_PIC.py
+  python3.8 main_BerOpt.py
  ```
- 6. Congratulations, the code is properly set up. You can now run different instances of GJR and PIC. The code can also be used for solving new applications using self-guided approximate linear programs. 
+ 6. Congratulations, the code is properly set up. 
 
