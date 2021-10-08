@@ -10,7 +10,6 @@ Approximate linear programs (ALPs) are well-known models based on value function
 ### **How to use this code?** 
  1. Download this repository on your local system and extract the zip file.
  2. Make sure that python 3.8 or above is installed on your machine.
-    * sys
  3. Please run the following code in your terminal to see if all needed Python libraries are installed on your machine or not.
  ```
   python3.8 checkLibraries.py 
