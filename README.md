@@ -1,5 +1,5 @@
 # Self-guided Approximate Linear Programs
-###### **Last update:** January 2020
+###### **Last update:** October 2021
 ###### The manuscript correpsoding to this repositotry is avilable at [arXiv](https://arxiv.org/abs/2001.02798) and [SSRN](https://ssrn.com/abstract=3512665).
 ###### **Topics:** Approximate dynamic programming, Approximate linear programming, Reinforcement learning, Random Fourier features, Inventory management
 ---
@@ -28,12 +28,3 @@ Instances from two applications are used for testing. The first one is a variant
  ```
  6. Congratulations, the code is properly set up. You can now run different instances of GJR and PIC. The code can also be used for solving new applications using self-guided approximate linear programs. 
 
----
-#### **References:**  
-[1] Adelman, Daniel, and Diego Klabjan, *Computing near-optimal policies in generalized joint replenishment (2012)*. INFORMS Journal on Computing 24(1), pp 148-164.
-
-[2] Pakiman, Parshan and Nadarajah, Selvaprabu and Soheili, Negar and Lin, Qihang, *Self-guided Approximate Linear Programs (2020)*. Available at SSRN: https://ssrn.com/abstract=3512665.
-
-[3] Rahimi, Ali, and Benjamin Recht, *Uniform approximation of functions with random bases (2008)*. In 46th Annual Allerton Conference on Communication, Control, and Computing, pp 555-561.
-
-[4] Lin, Qihang and Nadarajah, Selvaprabu and Soheili, Negar, *Revisiting approximate linear programming: Constraint-violation learning with applications to inventory control and energy storage (2019)*. Management Science, Forthcoming. 
