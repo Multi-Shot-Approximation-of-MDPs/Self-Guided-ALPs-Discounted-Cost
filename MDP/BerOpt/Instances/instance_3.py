@@ -8,15 +8,20 @@
 -------------------------------------------------------------------------------
 """
 
+
 from MDP.BerOpt.bermudanOptionPricing import BermudanOption
+from BasisFunction.berOptSpecificBasisFunction import BerOptBasisFunction
 import numpy as np
 from scipy.stats import uniform
 from BasisFunction.fourierBasisFunctionsForBerOpt import FourierBasisForBerOpt
 
 
+
+
+
 volatility_         = 0.20
 interest_rate_      = 0.05
-init_price_         = 90.0    
+init_price_         = 110.0    
 num_exercise_       = 54
 
 
@@ -37,7 +42,7 @@ def get_experiment_setup():
     mdp_conf.update({
                 'mdp'                           :   BermudanOption,
                 'mdp_name'                      :   'BerOpt',
-                'instance_number'               :   '1',
+                'instance_number'               :   '3',
                 'time_horizon'                  :   3,
                 'num_asset'                     :   4,
                 'dim_act'                       :   1,
@@ -78,7 +83,8 @@ def get_experiment_setup():
                 'batch_size'                    :   None,
                 'bandwidth'                     :   None, #[.001],
                 'basis_func_random_state'       :   None, #111,
-                'num_cpu_core'                  :   misc_conf['num_cpu_core']
+                'num_cpu_core'                  :   misc_conf['num_cpu_core'],
+                'preprocess_batch'              :   None, 
         })
     
     
@@ -97,6 +103,13 @@ def get_experiment_setup():
     #             'basis_func_random_state'       :   None,
     #     })
     
+    
+    # misc_conf.update({ 
+    #             'num_cpu_core'                  :   12,
+    #             })
+
+
+
     upp_bound_conf.update({
          
                 # 'dim_state_act'                 :   mdp_conf['dim_state'] + mdp_conf['dim_act'],
@@ -107,6 +120,7 @@ def get_experiment_setup():
                                                            # mdp_conf['max_order']]),
                                                            
                                                          
+                'upp_bound'                     : None,
                 'upp_bound_algo_name'           : 'LNS',
                 'num_MC_init_states'            : 200,
                 'MC_sample_path_len'            : 100,

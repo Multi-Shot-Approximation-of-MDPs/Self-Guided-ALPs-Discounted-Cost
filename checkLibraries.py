@@ -1,13 +1,14 @@
 #"""
 #-------------------------------------------------------------------------------
 #
-#    Authors:    Parshan Pakiman  | https://parshanpakiman.github.io
+#    Authors:    Parshan Pakiman  | https://parshanpakiman.github.io/homepage/
 #                Selva Nadarajah  | https://selvan.people.uic.edu/
 #                         
 #    Licensing Information: The MIT License
 #-------------------------------------------------------------------------------
 #"""
 import imp
+
 
 listLibs = ['gurobipy',
             'numpy',
@@ -23,6 +24,7 @@ listLibs = ['gurobipy',
             'sampyl',
             'sys',
             'tqdm',
+            'sampyl_mcmc',
             'importlib']
 notFound = []
 found    = []

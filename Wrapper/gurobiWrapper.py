@@ -31,26 +31,42 @@ class gurobi_LP_wrapper(lin_prog_wrapper):
         self.num_cpu_core   = self.solver_conf['num_cpu_core']
         self.ALP.setParam('OutputFlag',False)
         self.ALP.setParam('LogFile','Output/groubi_log_file.log')
-        self.ALP.setParam('Threads',self.num_cpu_core) 
+        self.ALP.setParam('Threads', self.num_cpu_core) 
         self.ALP.setParam('Seed',           333)
         self.ALP.setParam('FeasibilityTol', 1e-5)
         self.ALP.setParam('OptimalityTol',  1e-6)
         self.ALP.setParam('Method',         2)
         self.ALP.setParam('Crossover',      0)
-        self.ALP_var                = None 
-        self.dual_var_value         = None
-        self.ALP_matrix             = None
-        self.num_new_basis          = None
-        self.SG_feasbile_sln_prev   = None 
-        self.FALP_feasbile_sln_prev = None 
         
-    def re_initialize_solver(self):
+        self.ALP_var                    = None 
+        self.dual_var_value             = None
+        self.ALP_matrix                 = None
+        self.num_new_basis              = None
+        self.SG_feasbile_sln_prev       = None 
+        self.FALP_feasbile_sln_prev     = None 
+        
+    
+    
+    def re_initialize_solver(self,reset_matrix=False):
         #-------------------------------------------------------------------------------
         # Rest Gurobi model
         #-------------------------------------------------------------------------------
         self.ALP.remove(self.ALP.getConstrs())
         self.obj_coef               = None
-       
+        
+        if reset_matrix:
+            self.ALP.remove(self.ALP.getVars())
+            self.ALP_var                    = None 
+            self.dual_var_value             = None
+            self.ALP_matrix                 = None
+            self.num_new_basis              = None
+            self.SG_feasbile_sln_prev       = None 
+            self.FALP_feasbile_sln_prev     = None 
+         
+            #self.ALP.update()
+
+        
+
     def prepare(self):
         #-------------------------------------------------------------------------------
         # Prepare Gurobi model before being solved
@@ -61,6 +77,7 @@ class gurobi_LP_wrapper(lin_prog_wrapper):
         #-------------------------------------------------------------------------------
         # Optimize Gurobi model
         #-------------------------------------------------------------------------------
+
         self.ALP.optimize()
         if self.ALP.status == GRB.OPTIMAL:
             self.FALP_feasbile_sln_prev = asarray(self.ALP.X)    
@@ -116,7 +133,7 @@ class gurobi_LP_wrapper(lin_prog_wrapper):
 
         if self.ALP_matrix is None:
             self.ALP_matrix = new_ALP_columns @ self.ALP_var
-        else:            
+        else:                        
             self.ALP_matrix = self.ALP_matrix  + new_ALP_columns @ self.ALP_var[range( self.ALP.NumVars - self.num_new_basis, self.ALP.NumVars)]
 
         self.ALP.addConstr( self.ALP_matrix <=  ALP_RHS)
@@ -127,8 +144,11 @@ class gurobi_LP_wrapper(lin_prog_wrapper):
         #-------------------------------------------------------------------------------
         # Add guiding constraints to an exisiting Gurobi model
         #-------------------------------------------------------------------------------
-        self.ALP.setParam('OptimalityTol',  1e-8)
+        
+        # self.ALP.setParam('OptimalityTol',  1e-8)
         self_guiding_constr_matrix[np.abs(self_guiding_constr_matrix) < 1e-5] = 0.0
+        # 
+        
         if not self.SG_feasbile_sln_prev is None:
             
             for _ in range(len(self.ALP_var.tolist())):

@@ -31,7 +31,7 @@ def get_experiment_setup():
     # Miscellaneous configuration
     misc_conf.update({
                 'opt_gap_threshold'             :     0.05,
-                'num_cpu_core'                  :     8            })
+                'num_cpu_core'                  :     16            })
    
     #--------------------------------------------------------------------------
     # MDP configuration
@@ -39,9 +39,9 @@ def get_experiment_setup():
         
                 'mdp'                           :   PerishableInventoryPartialBacklogLeadTime,
                 'mdp_name'                      :   'PIC',
-                'instance_number'               :   '1',
-                'lead_time'                     :   2,
-                'life_time'                     :   2,
+                'instance_number'               :   '19',
+                'lead_time'                     :   6,
+                'life_time'                     :   5,
                 'dim_act'                       :   1,
                 'discount'                      :   .95,
                 'random_seed'                   :   12345 
@@ -51,12 +51,12 @@ def get_experiment_setup():
 
     mdp_conf.update({
                 'dim_state'                     :   mdp_conf['lead_time'] + mdp_conf['life_time'] -1,
-                'purchase_cost'                 :   20*pow(mdp_conf.get('discount'),2),
+                'purchase_cost'                 :   10*pow(mdp_conf.get('discount'),2),
                 
-                'holding_cost'                  :   2,
-                'disposal_cost'                 :   5,
-                'backlogg_cost'                 :   10,
-                'lostsale_cost'                 :   100,
+                'holding_cost'                  :   1,
+                'disposal_cost'                 :   8,
+                'backlogg_cost'                 :   2,
+                'lostsale_cost'                 :   1000,
                 
                 'max_order'                     :   10,     
                 'max_backlog'                   :  -10,  
@@ -68,7 +68,7 @@ def get_experiment_setup():
     mdp_noise_conf.update({
         
                 'dist_mean'                     :   5,
-                'dist_std'                      :   2,
+                'dist_std'                      :   5,
                 'dist_min'                      :   0,
                 'dist_max'                      :   10,  
                 'num_sample_noise'              :   2000,
@@ -81,9 +81,9 @@ def get_experiment_setup():
     # Greedy policy configuration       
     greedy_pol_conf.update({
                 'update_state_rel_via_greedy_pol'   :   None,
-                'len_traj'                          :   1000,    
-                'num_traj'                          :   500,   
-                'init_state_sampler'                :   [uniform(loc=5,scale=0) for _ in range(mdp_conf['dim_state'])],
+                'len_traj'                          :   200,    
+                'num_traj'                          :   200,   
+                'init_state_sampler'                :   [uniform(loc=5.0,scale=0.0) for _ in range(mdp_conf['dim_state'])],
                 'num_cpu_core'                      :   misc_conf['num_cpu_core']   ,
                 'action_selector_name'              :   'discretization',
                 'action_discrete_param'             :   1,

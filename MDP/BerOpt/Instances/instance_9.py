@@ -8,15 +8,18 @@
 -------------------------------------------------------------------------------
 """
 
+
 from MDP.BerOpt.bermudanOptionPricing import BermudanOption
+from BasisFunction.berOptSpecificBasisFunction import BerOptBasisFunction
 import numpy as np
 from scipy.stats import uniform
 from BasisFunction.fourierBasisFunctionsForBerOpt import FourierBasisForBerOpt
 
 
+
 volatility_         = 0.20
 interest_rate_      = 0.05
-init_price_         = 90.0    
+init_price_         = 110.0    
 num_exercise_       = 54
 
 
@@ -37,9 +40,9 @@ def get_experiment_setup():
     mdp_conf.update({
                 'mdp'                           :   BermudanOption,
                 'mdp_name'                      :   'BerOpt',
-                'instance_number'               :   '1',
+                'instance_number'               :   '9',
                 'time_horizon'                  :   3,
-                'num_asset'                     :   4,
+                'num_asset'                     :   16,
                 'dim_act'                       :   1,
                 'knock_out_price'               :   170.0,
                 'strike_price'                  :   100.0,
@@ -97,6 +100,7 @@ def get_experiment_setup():
     #             'basis_func_random_state'       :   None,
     #     })
     
+        
     upp_bound_conf.update({
          
                 # 'dim_state_act'                 :   mdp_conf['dim_state'] + mdp_conf['dim_act'],

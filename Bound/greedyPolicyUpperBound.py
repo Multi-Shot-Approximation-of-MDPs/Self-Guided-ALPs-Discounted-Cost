@@ -98,7 +98,7 @@ class GreedyPolicy:
         return tot_discounted_cost,visited_states,visited_action
     
     
-    def expected_cost(self):
+    def expected_cost(self, get_visited_action=False):
         #----------------------------------------------------------------------
         # Estimates the expected cost of a policy defined by a VFA
         #----------------------------------------------------------------------
@@ -118,12 +118,21 @@ class GreedyPolicy:
         pool.join()
         cost_list        = [X[_][0] for _ in range(self.num_traj)]
         visited_states   = [np.array(X[_][1][j]) for _ in range(self.num_traj) for j in range(len(X[_][1]))]
+        
+        cost_mean, cost_lb,cost_ub,cost_se = mean_confidence_interval(cost_list)
+        
+        if get_visited_action== False:
+            return cost_mean, cost_lb,cost_ub,cost_se,visited_states
 
+        else:
+            visited_action   = [np.array(X[_][2][j]) for _ in range(self.num_traj) for j in range(len(X[_][2]))]
+            return cost_mean, cost_lb,cost_ub,cost_se,visited_states,visited_action
+            
+            
+        
         #--------------------------------------------------------------------------
         # Calculate the mean and standard error of computed costs.
-        cost_mean, cost_lb,cost_ub,cost_se = mean_confidence_interval(cost_list)
-    
-        return cost_mean, cost_lb,cost_ub,cost_se,visited_states
+        
  
     
     def greedy_policy_objective(self,cur_state,cur_action):

@@ -10,10 +10,13 @@
 """
 from BasisFunction.basisFunctions import BasisFunctions
 from numba import jit,prange
-from numba.core.errors import NumbaDeprecationWarning, NumbaPendingDeprecationWarning
+from numba.core.errors import NumbaDeprecationWarning, NumbaPendingDeprecationWarning,NumbaPerformanceWarning
 import warnings
 warnings.simplefilter('ignore', category=NumbaDeprecationWarning)
 warnings.simplefilter('ignore', category=NumbaPendingDeprecationWarning)
+warnings.simplefilter('ignore', category=NumbaPerformanceWarning)
+
+
 import numpy as np
 from numpy import array
 
@@ -27,7 +30,7 @@ def get_VFA(state,strike_price,opt_coef):
     return  array([1 - y] + [max(max([state[_] for _ in range(len(state-1)) ]) - strike_price,0)*(1-y)] +  [(1-y)*state[_] for _ in range(len(state-1))])@opt_coef
 
 @jit(nopython=True,nogil=True,parallel=False,fastmath=True)
-def get_expected_VFA(state_list,strike_price,opt_coef):
+def eval_basis(state_list,strike_price,opt_coef):
     #--------------------------------------------------------------------------
     # Get expected VFA based on several state
     #--------------------------------------------------------------------------
@@ -58,6 +61,49 @@ def eval_basis(state_list:np.ndarray,max_state_list:np.ndarray,strike_price,num_
 
     return evals
 
+
+@jit(nopython=True,nogil=True,fastmath=True,parallel=True)
+def mean_evals_on_inner_samples(state_matrix,num_basis_func,strike_price,num_ini_samples,num_inner_samples):
+
+    VFA   = np.empty((num_ini_samples,num_basis_func))
+    dim   = len(state_matrix[0,0,:])
+    
+    for i in prange(num_ini_samples):
+        state_list          = state_matrix[i,:,:]
+        sum_evals           = np.zeros(dim+1) 
+
+        for j in prange(num_inner_samples):
+            y                   = 1 - state_list[j,dim-1]   
+            sum_evals[0]       += y
+            sum_evals[1]       += max(max(state_list[j,:]) - strike_price, 0) * y
+            for _ in prange(dim-1):
+                sum_evals[_+2] += state_list[j,_] * y
+
+        VFA[i,:] = sum_evals/num_inner_samples
+    
+    return VFA
+
+
+@jit(nopython=True,nogil=True,fastmath=True,parallel=True)
+def evals_on_inner_samples(state_matrix,num_basis_func,strike_price,num_ini_samples,num_inner_samples):
+
+    VFA   = np.empty((num_ini_samples,num_inner_samples,num_basis_func))
+    dim   = len(state_matrix[0,0,:])
+    for i in prange(num_ini_samples):
+        
+        state_list          = state_matrix[i,:,:]
+        for j in prange(num_inner_samples):
+            y               = 1 - state_list[j,dim-1]
+            VFA[i,j,0]      = y
+            VFA[i,j,1]      = max(max(state_list[j,:]) - strike_price,0) * y
+    
+            for _ in prange(dim-1):
+                VFA[i,j,_+2] = state_list[j,_] * y
+    
+    return VFA
+
+
+
 @jit(nopython=True,nogil=True,parallel=True,fastmath=True)
 def numba_mean(matrix:np.ndarray,num_init_states:int,num_basis:int): 
     #--------------------------------------------------------------------------
@@ -83,13 +129,28 @@ class BerOptBasisFunction(BasisFunctions):
         self.strike_price       = basis_setup['mdp_conf']['strike_price']
         self.num_basis_func     = basis_setup['mdp_conf']['num_asset']+2
         self.batch_size         = basis_setup['mdp_conf']['num_asset']+2
+        self.bandwidth          = basis_setup['basis_func_conf']['bandwidth'] # its here just for saving results
+        assert self.batch_size == self.max_basis_num, 'batch_size or/and max_basis_num are off for BerOptBasisFunction'
+
+        self.max_basis_num      = self.batch_size
         self.preprocess_batch   = self.num_basis_func 
-    
+        
+        
     def sample(self, add_constant_basis = False):
         return None,None
 
+
     def set_param(self,param):
         pass
+
+    
+    def compute_expected_basis_func(self,state_matrix,num_init_states,num_inner_samples,num_times_basis_added=None):
+        return mean_evals_on_inner_samples(state_matrix,self.num_basis_func,self.strike_price,np.shape(state_matrix)[0],num_inner_samples)
+        
+
+    def eval_basis_func_on_inner_samples(self,state_matrix,num_init_states,num_inner_samples,num_times_basis_added=None):
+        return evals_on_inner_samples(state_matrix,self.num_basis_func,self.strike_price,np.shape(state_matrix)[0],num_inner_samples)
+        
 
     def list_expected_basis(self,state_matrix,basis_param=None):
         #----------------------------------------------------------------------
@@ -102,7 +163,9 @@ class BerOptBasisFunction(BasisFunctions):
         list_of_mean_basis                          = numba_mean(list_of_mean_basis,num_init_states,self.num_basis_func)        
         return list_of_mean_basis
         
-    def eval_basis(self,state_list,basis_param=None):     
+    
+    def eval_basis(self,state_list,num_times_basis_added=None,all_bases=True):     
         return eval_basis(state_list,np.max(state_list,axis=1),self.strike_price,self.num_basis_func)
    
+    
 

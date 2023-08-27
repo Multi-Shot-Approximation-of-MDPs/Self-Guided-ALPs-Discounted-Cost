@@ -28,6 +28,7 @@ def get_VFA(theta_list,intercept_list,opt_coef,state):
     # weights for these bases obtained from an ALP model and a set of
     # sampled random basis parameters.
     #----------------------------------------------------------------------
+    
     return cos(theta_list@state+intercept_list)@opt_coef
 
 
@@ -147,14 +148,14 @@ class FourierBasis(BasisFunctions):
         # Please see the corresponding jited functions in preamble
         #----------------------------------------------------------------------
         if coef is None:
-            return get_VFA(self.theta_list,self.intercept_list,self.opt_coef,state)
+            return get_VFA(self.theta_list,self.intercept_list,self.opt_coef, state)
         else:
-            return get_VFA(self.theta_list,self.intercept_list, coef,state)
+            return get_VFA(self.theta_list,self.intercept_list, coef, state)
         
 
     def get_expected_VFA(self,state_list):
         #----------------------------------------------------------------------
         # Please see the corresponding jited functions in preamble
         #----------------------------------------------------------------------
-        return get_expected_VFA(self.theta_list,self.intercept_list,self.opt_coef,state_list)
+        return get_expected_VFA(self.theta_list, self.intercept_list, self.opt_coef, state_list)
  

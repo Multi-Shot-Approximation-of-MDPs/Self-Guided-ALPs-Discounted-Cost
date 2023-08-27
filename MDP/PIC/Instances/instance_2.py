@@ -39,11 +39,11 @@ def get_experiment_setup():
         
                 'mdp'                           :   PerishableInventoryPartialBacklogLeadTime,
                 'mdp_name'                      :   'PIC',
-                'instance_number'               :   '1',
+                'instance_number'               :   '2',
                 'lead_time'                     :   2,
                 'life_time'                     :   2,
                 'dim_act'                       :   1,
-                'discount'                      :   .95,
+                'discount'                      :   .99,
                 'random_seed'                   :   12345 
                 
         })

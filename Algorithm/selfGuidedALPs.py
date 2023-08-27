@@ -13,18 +13,12 @@ from numpy import asarray,concatenate
 from Bound.greedyPolicyUpperBound import GreedyPolicy
 import time
 from Bound.lowerBoundEstimator import LowerBound
-from utils import output_handler,make_text_bold
+from utils import output_handler,make_text_bold,make_single_ALP_constriant
 from functools import partial
 from math import floor
 import numpy as np
 
-
-def make_single_ALP_constriant(eval_basis,discount,expected_basis,get_batch_next_state,get_expected_cost,new_basis_param,state,action): 
-    return eval_basis(state,new_basis_param), \
-               discount*expected_basis(get_batch_next_state(state,action),new_basis_param),\
-                   get_expected_cost(state,action)  
-                              
-                              
+                    
 class Self_Guided_ALP:
     
     def __init__(self,instance_conf):
@@ -62,10 +56,16 @@ class Self_Guided_ALP:
         if 'update_state_rel_via_greedy_pol' in instance_conf['greedy_pol_conf']:
             self.update_state_rel_via_greedy_pol    =  instance_conf['greedy_pol_conf']['update_state_rel_via_greedy_pol' ]
             self.state_relevance_inner_itr          =  instance_conf['greedy_pol_conf']['state_relevance_inner_itr' ]
-
+            self.update_constr_via_greedy_pol       =  instance_conf['greedy_pol_conf']['update_constr_via_greedy_pol' ]
+            
+            
+            
         self.num_basis_to_update_pol_cost           = instance_conf['greedy_pol_conf']['num_basis_to_update_pol_cost' ]
         
-
+        
+        self.init_state_sampler                 = instance_conf['greedy_pol_conf']['init_state_sampler']
+        
+        
     def compute_FALP_components(self,new_basis_param, state_list, act_list):
         #----------------------------------------------------------------------
         # This function computes the left-hand-side and right-hand-side of
@@ -103,7 +103,8 @@ class Self_Guided_ALP:
         #----------------------------------------------------------------------
         new_constraint_matrix, new_RHS_vector, new_expct_VFA, basis_func_evals\
                 = self.compute_FALP_components(self.basis_param , state_list, act_list)
-
+                
+                
         #----------------------------------------------------------------------
         # Either construct ALP components from scratch if it is the first
         # iteration or update based on the existing components of ALP
@@ -132,6 +133,10 @@ class Self_Guided_ALP:
         self.ALP_solver.re_initialize_solver()
         self.ALP_solver.add_new_variables(self.basis_func.batch_size)
         
+        
+        # print('\n\n',asarray(self.ALP_solver.get_optimal_solution()),'\n')
+        
+        
         if self.basis_param is None:
             self.basis_param = new_basis_param
         else:
@@ -139,9 +144,10 @@ class Self_Guided_ALP:
             old_state_new_basis_constraint_matrix, old_state_new_basis_RHS_vector,\
                 old_state_new_basis_expct_VFA, old_state_new_basis_func_evals  = self.compute_FALP_components(new_basis_param , state_list_all, act_list_all)
             
+            
             self.ALP_constr_matrix  = concatenate((self.ALP_constr_matrix,old_state_new_basis_constraint_matrix),axis=1)
             self.ALP_solver.add_FALP_constraint(old_state_new_basis_constraint_matrix, self.ALP_RHS)
-            self.basis_func_evals =  concatenate((self.basis_func_evals,old_state_new_basis_func_evals),axis=1) 
+            self.basis_func_evals   =  concatenate((self.basis_func_evals,old_state_new_basis_func_evals),axis=1) 
             
         #----------------------------------------------------------------------
         # If the model is policy-guided FALP, then updated the ALP objective 
@@ -203,6 +209,7 @@ class Self_Guided_ALP:
         print('='*127)
         print('Instance number: \t'     + make_text_bold(self.mdp.instance_number))
         print('Algorithm name: \t'      + make_text_bold('Lower Bound Estimator'))
+        print('Basis function: \t'      + make_text_bold(self.basis_func.basis_func_type))
         print('State relevance: \t'     + make_text_bold(self.mdp_sampler_conf['state_relevance_name']))
         print('Random basis seed: \t'   + make_text_bold(str(self.basis_func.basis_func_random_state)))
         print('='*127)
@@ -306,6 +313,7 @@ class Self_Guided_ALP:
         #----------------------------------------------------------------------
         # Initialization
         greedy_pol_visited_state                = None
+        greedy_pol_visited_action               = None          
         num_sampled_basis                       = 0
         total_num_constr                        = 0
         state_list_all                          = []
@@ -325,6 +333,8 @@ class Self_Guided_ALP:
             print('Algorithm name: \t'      + make_text_bold('FALP'))
         else:
             print('Algorithm name: \t'      + make_text_bold('Policy-guided FALP'))
+        
+        print('Basis function: \t'      + make_text_bold(self.basis_func.basis_func_type))
         print('State relevance: \t'     + make_text_bold(self.mdp_sampler_conf['state_relevance_name']))
         print('# inner updates: \t'     + make_text_bold(self.state_relevance_inner_itr))
         print('Random basis seed: \t'   + make_text_bold(str(self.basis_func.basis_func_random_state)))
@@ -358,7 +368,15 @@ class Self_Guided_ALP:
                
             #------------------------------------------------------------------
             # Given sampled bases, add columns to ALP
-            self.add_columns_to_FALP(num_sampled_basis,new_basis_param,state_list_all,act_list_all,greedy_pol_visited_state)
+            
+            if num_sampled_basis > self.basis_func.batch_size and self.update_constr_via_greedy_pol==True:
+                
+                state_list_all,act_list_all = greedy_pol_visited_state,greedy_pol_visited_action
+                self.add_columns_to_FALP(num_sampled_basis,new_basis_param,state_list_all,act_list_all,greedy_pol_visited_state)
+            
+            else:
+                self.add_columns_to_FALP(num_sampled_basis,new_basis_param,state_list_all,act_list_all,greedy_pol_visited_state)
+                
             ALP_con_runtime =  time.time() - ALP_con_runtime
     
             #------------------------------------------------------------------
@@ -451,11 +469,14 @@ class Self_Guided_ALP:
             self.lower_bound_estimator.set_basis_func(self.basis_func)
 
             #------------------------------------------------------------------
-            # Load lower bound from file
-            lb_mean, lb_lb,lb_ub, lb_se,best_lb_mean    = self.output_handler.load_lower_bound() 
-            lb_runtime                                  = 0
-            lb_mean                                     = best_lb_mean
-            best_lower_bound                            = max(best_lower_bound,lb_mean)
+            # Change state relevance distribution and recompute VFA to simulate lower bound
+            lb_runtime                          = time.time()
+            lb_mean, lb_lb,lb_ub, lb_se     = self.lower_bound_estimator.get_lower_bound()
+            lb_runtime                      = time.time() - lb_runtime
+            best_lower_bound                = max(best_lower_bound,lb_mean)
+            
+            
+            
             
             print('| {:>9d} | {:>12d} | {:>15.1f} | {:>8.3f} | {:>8.3f} | {:>15.1f} | {:>8.3f} |'.format(basis,constrs,obj_ALP,ALP_con_runtime/60,ALP_slv_runtime/60,lb_mean,lb_runtime/60),end="\r") 
             
@@ -463,7 +484,7 @@ class Self_Guided_ALP:
             # If user asked to update the upper bound, then do so
             start_time = time.time()
             if num_sampled_basis in  self.num_basis_to_update_pol_cost:
-                cost_mean, cost_lb,cost_ub,cost_se, greedy_pol_visited_state  = self.greedy_policy.expected_cost()
+                cost_mean, cost_lb,cost_ub,cost_se, greedy_pol_visited_state,greedy_pol_visited_action  = self.greedy_policy.expected_cost(True)
                 best_upper_bound = min(cost_mean,best_upper_bound)
                 ub_runtime = time.time() - start_time
                 opt_gap = floor((cost_mean-best_lower_bound)*100/cost_mean)
@@ -480,7 +501,7 @@ class Self_Guided_ALP:
 
             #------------------------------------------------------------------
             # Store results on disk and break if sampled enough bases
-            if not self.update_state_rel_via_greedy_pol or  self.state_relevance_inner_itr ==0:    
+            if not self.update_state_rel_via_greedy_pol or self.state_relevance_inner_itr ==0:    
                 self.output_handler.append_to_outputs(  algorithm_name              ='FALP',
                                                         state_relevance_name        = self.mdp_sampler_conf['state_relevance_name'],
                                                         basis_seed                  = self.basis_func.basis_func_random_state,
@@ -512,42 +533,85 @@ class Self_Guided_ALP:
                 # This is for policy-guided FALP
                 #--------------------------------------------------------------
                 if self.state_relevance_inner_itr>0:
-                    
+                    basis,constrs = self.ALP_solver.get_num_var_constr()
                     #----------------------------------------------------------
                     # Iterate to update state relevance distribution
                     for inner_updates in range(self.state_relevance_inner_itr):
                         
                         print('| {:>9d} | {:>12d} |'.format(basis,constrs), end="\r")
-                
+
+                        if self.update_constr_via_greedy_pol:
+                            self.ALP_solver.re_initialize_solver(reset_matrix=True)
+                            self.ALP_solver.add_new_variables(num_sampled_basis)
+                            self.ALP_constr_matrix = None
+
+
+                            
+
+                            greedy_pol_visited_state  = np.array(greedy_pol_visited_state)
+                            greedy_pol_visited_action = np.array([greedy_pol_visited_action]).T  
+                            
+                            
+                            state_act_pair = np.concatenate((greedy_pol_visited_state,greedy_pol_visited_action),axis=1)
+                            _,unique_index = np.unique(state_act_pair, axis=0,return_index=True)
+                            
+                            greedy_pol_visited_state_unique     =  greedy_pol_visited_state[unique_index,:]
+                            greedy_pol_visited_action_unique    =  list(greedy_pol_visited_action[unique_index].flatten())
+                            
+                            
+                    
+                            
+                            self.add_FALP_constr(state_list_all + list(greedy_pol_visited_state_unique),
+                                                 act_list_all + list(greedy_pol_visited_action_unique),False)
+
+
                         additional_ALP_slv_runtime      = time.time()
                         obj_coef                        = sum([self.basis_func.eval_basis(state,self.basis_param) 
                                                                for state in greedy_pol_visited_state])/len(greedy_pol_visited_state)
+ 
                         self.ALP_solver.set_objective(obj_coef)
                         self.ALP_solver.prepare()
                         self.ALP_solver.optimize()
+                        
                         obj_ALP                         = self.ALP_solver.get_optimal_value()
                         self.basis_func.set_param(self.basis_param)
                         self.basis_func.set_optimal_coef(asarray(self.ALP_solver.get_optimal_solution()))
                         self.greedy_policy.set_basis_func(self.basis_func)
                         additional_ALP_slv_runtime      = time.time() - additional_ALP_slv_runtime
-                        ALP_slv_runtime                 +=additional_ALP_slv_runtime 
+                        ALP_slv_runtime                 += additional_ALP_slv_runtime 
                         
+                        basis, constrs                  = self.ALP_solver.get_num_var_constr()
+                        
+                        
+                        if inner_updates == self.state_relevance_inner_itr-1:
+                            lb_runtime                          = time.time()
+                            self.lower_bound_estimator.set_basis_func(self.basis_func)
+                            
+                            
+                            lb_mean, lb_lb,lb_ub, lb_se     = self.lower_bound_estimator.get_lower_bound()
+                            lb_runtime                      = time.time() - lb_runtime
+                            best_lower_bound                = max(best_lower_bound,lb_mean)
+                            best_lower_bound                = max(best_lower_bound,lb_mean)
+                            
+                            
+    
                         print('| {:>9d} | {:>12d} | {:>15.1f} | {:>8.3f} | {:>8.3f} | {:>15.1f} | {:>8.3f} | {:>15.1f} |'.format(
                                 basis,constrs,obj_ALP,ALP_con_runtime/60,ALP_slv_runtime/60,lb_mean,lb_runtime/60,cost_mean), end="\r")
                         
                         additional_ub_runtime = time.time()
-                        cost_mean, cost_lb,cost_ub,cost_se, greedy_pol_visited_state  = self.greedy_policy.expected_cost()
+                        cost_mean, cost_lb,cost_ub,cost_se,\
+                            greedy_pol_visited_state,greedy_pol_visited_action  = self.greedy_policy.expected_cost(get_visited_action=True)
                         opt_gap = floor((cost_mean-best_lower_bound)*100/cost_mean)
                         additional_ub_runtime = time.time() - additional_ub_runtime
                         ub_runtime+=additional_ub_runtime 
 
                         print('| {:>9d} | {:>12d} | {:>15.1f} | {:>8.3f} | {:>8.3f} | {:>15.1f} | {:>8.3f} | {:>15.1f} | {:>8.3f} | {:>15.1f} | {:>8.3f} |'.format(
                                 basis,constrs,obj_ALP,ALP_con_runtime/60,ALP_slv_runtime/60,lb_mean,lb_runtime/60,cost_mean,ub_runtime/60,opt_gap,(time.time()-tot_runtime)/60), end="\n")
-                    
+                        
                         #--------------------------------------------------------------   
                         # Store results   on disk                                    
                         self.output_handler.append_to_outputs(  
-                                           algorithm_name              ='PG_FALP',
+                                           algorithm_name              ='FALP',
                                            state_relevance_name        = self.mdp_sampler_conf['state_relevance_name'],
                                            basis_seed                  = self.basis_func.basis_func_random_state,
                                            num_basis_func              = basis,
@@ -567,14 +631,16 @@ class Self_Guided_ALP:
                                            policy_cost_se              = cost_se,
                                            policy_cost_ub              = cost_ub,
                                            policy_cost_runtime         = ub_runtime/60,
-                                           total_runtime               = (time.time()-tot_runtime)/60)            
+                                           total_runtime               = (time.time()-tot_runtime)/60,
+                                           )            
             
             if num_sampled_basis >= self.max_basis_num:
                 break
             
-            FALP_iterations+=1 
+            FALP_iterations+=1
 
-
+        # FALP is done 
+        print('='*155)
     
     def SGFALP(self):
         #----------------------------------------------------------------------
@@ -597,11 +663,12 @@ class Self_Guided_ALP:
         # Show to the user what instance and model is getting solved (UI)          
         print('\n')
         print('='*184)
-        print('Instance number: \t'     + make_text_bold(self.mdp.instance_number))
-        print('Algorithm name: \t'      + make_text_bold('SGFALP'))
-        print('State relevance: \t'     + make_text_bold(self.mdp_sampler_conf['state_relevance_name']))
-        print('Random basis seed: \t'   + make_text_bold(str(self.basis_func.basis_func_random_state)))
-        print('Optimality threshold: \t'      + make_text_bold(str(100*self.opt_gap_threshold)+'%'))
+        print('Instance number: \t'         + make_text_bold(self.mdp.instance_number))
+        print('Algorithm name: \t'          + make_text_bold('SGFALP'))
+        print('Basis function: \t'          + make_text_bold(self.basis_func.basis_func_type))
+        print('State relevance: \t'         + make_text_bold(self.mdp_sampler_conf['state_relevance_name']))
+        print('Random basis seed: \t'       + make_text_bold(str(self.basis_func.basis_func_random_state)))
+        print('Optimality threshold: \t'    + make_text_bold(str(100*self.opt_gap_threshold)+'%'))
         print('='*184)
         print('| {:>9s} | {:>12s} | {:>15s} | {:>15s} | {:>8s} | {:>8s} | {:>8s} | {:>15s} | {:>8s} | {:>15s} | {:>8s} | {:>15s} | {:>8s} |'.format(
               '# Basis','# Constrs' ,'FALP Obj','SGFALP Obj', 'ALP ConT','ALP SlvT','SG T','Lower Bound', 'LB RT','Policy Cost', 'UB RT', 'Opt Gap (%)','TOT RT') )
@@ -638,13 +705,13 @@ class Self_Guided_ALP:
             #------------------------------------------------------------------
             # Generate or sample constraints until a stopping criteria is met
             while True:
-                basis,constrs = self.ALP_solver.get_num_var_constr()
+                basis, constrs = self.ALP_solver.get_num_var_constr()
                 
                 print('| {:>9d} | {:>12d} | {:>15.1f} |'.format(basis,constrs,FALP_obj_ALP),end="\r")  
                 self.ALP_solver.optimize()
             
                 STATUS = self.ALP_solver.get_status()
-                
+
                 #--------------------------------------------------------------
                 # Add constraints until finding a bounded program
                 if STATUS in ['INF_OR_UNBD','UNBOUNDED']:
@@ -696,14 +763,16 @@ class Self_Guided_ALP:
             #------------------------------------------------------------------
             self_guide_time =  time.time()
             is_self_guiding_constraints_needed = False 
-            VFA_prev_eval = [-float('inf')]*len(state_list_all)  
+            VFA_prev_eval   = [-float('inf')]*len(state_list_all)  
+            
             if self.basis_func.opt_coef is not None:
                 VFA_prev_eval = [self.basis_func.get_VFA(state) for state in state_list_all]
                 is_self_guiding_constraints_needed = True
             
+            
             self.basis_func.set_param(self.basis_param)
             self.basis_func.set_optimal_coef(asarray(self.ALP_solver.get_optimal_solution()))
-            
+   
             if is_self_guiding_constraints_needed:
                 basis_ceof,SGFALP_obj_ALP,num_self_guiding_constr = self.incorporate_self_guiding_constraint(VFA_prev_eval,state_list_all)   
                 if basis_ceof is not None:
@@ -715,36 +784,73 @@ class Self_Guided_ALP:
                 SGFALP_obj_ALP = FALP_obj_ALP
 
                             
-            self_guide_time = time.time()  - self_guide_time 
+            self_guide_time     = time.time() - self_guide_time
               
             print('| {:>9d} | {:>12d} | {:>15.1f} | {:>15.1f} | {:>8.3f} | {:>8.3f} | {:>8.3f} |'.format(basis,constrs,FALP_obj_ALP,
                                                                                             SGFALP_obj_ALP,ALP_con_runtime/60,ALP_slv_runtime/60,self_guide_time/60),end="\r")
             
-            
             #------------------------------------------------------------------
             # Computing Optimality Gap 
             #------------------------------------------------------------------
-            lb_mean, lb_lb,lb_ub, lb_se,best_lower_bound    = self.output_handler.load_lower_bound()
-            lb_runtime                                      = 0
-            lb_mean                                         = best_lower_bound
 
-            self.greedy_policy.set_basis_func(self.basis_func)
+
             if num_sampled_basis in  self.num_basis_to_update_pol_cost:
+                
+
+                
+                #------------------------------------------------------------------
+                # Compute upper bound based on FALP with uniform state relvance
+                
+                self.basis_func.set_param(self.basis_param)
+                self.basis_func.set_optimal_coef(asarray(self.ALP_solver.get_optimal_solution()))
+                self.greedy_policy.set_basis_func(self.basis_func)
+                
                 start_time = time.time()
                 cost_mean, cost_lb,cost_ub,cost_se,greedy_pol_visited_state  = self.greedy_policy.expected_cost()
                 ub_runtime = time.time() - start_time
+                best_upper_bound = cost_mean
                 
-                best_upper_bound = min(cost_mean,best_upper_bound)
-                opt_gap = floor((cost_mean-lb_mean)*100/cost_mean)
 
+                #------------------------------------------------------------------
+                # Change state relevance distribution and recompute VFA to simulate lower bound
+                lb_runtime                          = time.time()
+                self.mdp.state_relevance            = self.init_state_sampler        
+                lb_ALP_state_rel_sample             = self.mdp.get_batch_samples_state_relevance()  
+    
+                
+                obj_coef                            = sum([self.basis_func.eval_basis(state,self.basis_param) 
+                                                           for state in lb_ALP_state_rel_sample])/len(lb_ALP_state_rel_sample)
+            
+                self.ALP_solver.set_objective(obj_coef)
+                self.ALP_solver.optimize()
+                
+                self.basis_func.set_param(self.basis_param)
+                self.basis_func.set_optimal_coef(asarray(self.ALP_solver.get_optimal_solution()))
+                self.lower_bound_estimator.set_basis_func(self.basis_func)
+                
+                
+                lb_mean, lb_lb,lb_ub, lb_se     = self.lower_bound_estimator.get_lower_bound()
+                
+                best_lower_bound                = max(best_lower_bound,lb_mean)
+                
+                opt_gap = floor((cost_mean-lb_mean)*100/cost_mean)
+                lb_runtime                      = time.time() - lb_runtime
+
+            
                 print('| {:>9d} | {:>12d} | {:>15.1f} | {:>15.1f} | {:>8.3f} | {:>8.3f} | {:>8.3f} | {:>15.1f} | {:>8.3f} | {:>15.1f} | {:>8.3f} | {:>15.1f} | {:>8.3f} |'.format(basis,constrs,FALP_obj_ALP,
                                                                                             SGFALP_obj_ALP,ALP_con_runtime/60,ALP_slv_runtime/60,self_guide_time/60,
                                                                                             lb_mean,lb_runtime/60,cost_mean,ub_runtime/60,opt_gap, (time.time()-tot_runtime)/60),end="\n")
-
+           
+            
+            
             else:
+                lb_mean, lb_lb,lb_ub, lb_se                          = -float('inf'),-float('inf'),-float('inf'),-float('inf')
                 best_upper_bound, cost_mean, cost_lb,cost_ub,cost_se = float('inf'),float('inf'),float('inf'),float('inf'),float('inf')
-                ub_runtime = 0.0
+                lb_runtime, ub_runtime = 0.0, 0.0
                 opt_gap =  float('inf')
+                
+                
+                
                 print('| {:>9d} | {:>12d} | {:>15.1f} | {:>15.1f} | {:>8.3f} | {:>8.3f} | {:>8.3f} | {:>15.1f} | {:>8.3f} | {:>15.1f} | {:>8.3f} | {:>15.1f} | {:>8.3f} |'.format(basis,constrs,FALP_obj_ALP,
                                                                                             SGFALP_obj_ALP,ALP_con_runtime/60,ALP_slv_runtime/60,self_guide_time/60,
                                                                                             lb_mean,lb_runtime/60,float('inf'),0.0, float('inf'), (time.time()-tot_runtime)/60),end="\n")           
@@ -781,6 +887,12 @@ class Self_Guided_ALP:
                 break
   
 
+        print('='*184)
+        
+        
+        
+        
+        
     def constr_handler(self,total_num_constrains):
         #----------------------------------------------------------------------
         # Handles what constrains of semi-infinite programs

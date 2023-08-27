@@ -39,7 +39,7 @@ def get_experiment_setup():
         
                 'mdp'                           :   PerishableInventoryPartialBacklogLeadTime,
                 'mdp_name'                      :   'PIC',
-                'instance_number'               :   '1',
+                'instance_number'               :   '3',
                 'lead_time'                     :   2,
                 'life_time'                     :   2,
                 'dim_act'                       :   1,
@@ -58,8 +58,8 @@ def get_experiment_setup():
                 'backlogg_cost'                 :   10,
                 'lostsale_cost'                 :   100,
                 
-                'max_order'                     :   10,     
-                'max_backlog'                   :  -10,  
+                'max_order'                     :   50,     
+                'max_backlog'                   :  -50,  
                 
                 
         })
