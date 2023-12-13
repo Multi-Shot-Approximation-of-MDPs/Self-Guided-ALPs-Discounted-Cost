@@ -208,7 +208,7 @@ class BermudanOption(MarkovDecisionProcess):
                                                                         normal_dist_samples)
                     
             path                = np.reshape(path,newshape=(num_path,self.num_stages+1,self.num_asset))
-            knocked_out         = np.zeros((num_path,self.num_stages+1,1),dtype=np.bool)
+            knocked_out         = np.zeros((num_path,self.num_stages+1,1),dtype=np.bool_)
             
             
             for t in range(self.num_stages+1):
@@ -254,7 +254,7 @@ class BermudanOption(MarkovDecisionProcess):
                                                                         normal_dist_samples)
                     
             path                = np.reshape(path,newshape=(num_path,self.num_stages+1,self.num_asset))
-            knocked_out         = np.zeros((num_path,self.num_stages+1,1),dtype=np.bool)
+            knocked_out         = np.zeros((num_path,self.num_stages+1,1),dtype=np.bool_)
             
             
             for t in range(self.num_stages+1):
@@ -277,7 +277,7 @@ class BermudanOption(MarkovDecisionProcess):
         init_price_list     = np.array([self.init_price + noise[_] for _ in range(num_samples)])
 
         
-        # knocked_out         = np.zeros((num_samples,1),dtype=np.bool)
+        # knocked_out         = np.zeros((num_samples,1),dtype=np.bool_)
         # knocked_out[:,0]    = np.max(init_price_list,axis=1) >= self.knock_out_price
         
         # init_state          = np.append(init_price_list, knocked_out, axis=1)

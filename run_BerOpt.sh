@@ -15,35 +15,32 @@ CFA_num_test_sample_path=10000
 IR_inner_sample_size=100
 num_cpu_core=16
 
-
-source activate np_veclib
-#source activate intel_env 
-for instance_number in 1 2 3; do   
+for instance_number in 1; do   
     for seed in 111; do
         
         # Prepare random basis functions
-        # python main_BerOpt_ALP.py 'preprocess' $instance_number $seed $VFA_num_train_sample_path $VFA_num_test_sample_path $inner_sample_size\
-        #                             $state_relevance_type $abs_val_upp_bound\
-        #                                 $compute_IR_bound $basis_func_type $max_basis_num $batch_size $num_cpu_core $preprocess_batch
+        python main_BerOpt_ALP.py 'preprocess' $instance_number $seed $VFA_num_train_sample_path $VFA_num_test_sample_path $inner_sample_size\
+                                     $state_relevance_type $abs_val_upp_bound\
+                                         $compute_IR_bound $basis_func_type $max_basis_num $batch_size $num_cpu_core $preprocess_batch
         
         #Run LSMN algorithm 
         python main_BerOpt_LSM.py $instance_number  $CFA_num_train_sample_path\
                          $CFA_num_test_sample_path $seed $num_cpu_core $IR_inner_sample_size
                                         
         #Run ALP + DFM algorithm 
-        python main_BerOpt_ALP.py 'FALP' $instance_number $seed $VFA_num_train_sample_path $VFA_num_test_sample_path $inner_sample_size\
-                            $state_relevance_type $abs_val_upp_bound\
-                             $compute_IR_bound 'DFM' $max_basis_num $batch_size $num_cpu_core $preprocess_batch
+        #python main_BerOpt_ALP.py 'FALP' $instance_number $seed $VFA_num_train_sample_path $VFA_num_test_sample_path $inner_sample_size\
+        #                    $state_relevance_type $abs_val_upp_bound\
+        #                     $compute_IR_bound 'DFM' $max_basis_num $batch_size $num_cpu_core $preprocess_batch
                                         
         # Run FALP
-        python main_BerOpt_ALP.py 'FALP' $instance_number $seed $VFA_num_train_sample_path $VFA_num_test_sample_path $inner_sample_size\
-                                    $state_relevance_type $abs_val_upp_bound\
-                                        $compute_IR_bound $basis_func_type $max_basis_num $max_basis_num $num_cpu_core $preprocess_batch
+        #python main_BerOpt_ALP.py 'FALP' $instance_number $seed $VFA_num_train_sample_path $VFA_num_test_sample_path $inner_sample_size\
+        #                            $state_relevance_type $abs_val_upp_bound\
+        #                                $compute_IR_bound $basis_func_type $max_basis_num $max_basis_num $num_cpu_core $preprocess_batch
                                         
         # Run SG-FALP
-        python main_BerOpt_ALP.py 'SG_FALP' $instance_number $seed $VFA_num_train_sample_path $VFA_num_test_sample_path $inner_sample_size\
-                            $state_relevance_type $abs_val_upp_bound\
-                                $compute_IR_bound $basis_func_type $max_basis_num $batch_size $num_cpu_core $preprocess_batch
+        #python main_BerOpt_ALP.py 'SG_FALP' $instance_number $seed $VFA_num_train_sample_path $VFA_num_test_sample_path $inner_sample_size\
+        #                    $state_relevance_type $abs_val_upp_bound\
+        #                        $compute_IR_bound $basis_func_type $max_basis_num $batch_size $num_cpu_core $preprocess_batch
                     
     done
 done
