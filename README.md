@@ -1,6 +1,6 @@
 # Self-guided Approximate Linear Programs
-###### **Last update:** October 2021
-###### The manuscript correpsoding to this repositotry is avilable at [arXiv](https://arxiv.org/abs/2001.02798) and [SSRN](https://ssrn.com/abstract=3512665).
+###### **Last update:** Dec 2023
+###### This repository contains the code for the Self-Guided Approximate Linear Programming algorithm described in the paper titled 'Self-Guided Approximate Linear Programs: Randomized Multi-Shot Approximation of Discounted Cost Markov Decision Processes' by Parshan Pakiman, Selvaprabu Nadarajah, Negar Soheili, and Qihang Lin. The paper is available at [Management Science](https://ssrn.com/abstract=3512665).
 ###### **Topics:** Approximate dynamic programming, Approximate linear programming, Reinforcement learning, Random Fourier features, Inventory management
 ---
 
