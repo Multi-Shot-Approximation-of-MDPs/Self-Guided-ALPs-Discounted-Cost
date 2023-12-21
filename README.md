@@ -1,86 +1,129 @@
 # Self-guided Approximate Linear Programs
-###### **Last update:** 12/13/2023
-###### **Topics:** approximate dynamic programming, approximate linear programming, model-based reinforcement learning, random Fourier features, inventory management
+###### **Last updated on:** `December 21, 2023`
+###### **Topics:** `approximate dynamic programming`, `approximate linear programming`, `model-based reinforcement learning`, `random Fourier features`, `inventory management`, `Options Pricing`.
 ---
+
+
+<br>
 
 ## What is this repository?
 
-This repository hosts implementations of diverse algorithms discussed in the paper titled "Self-Guided Approximate Linear Programs: Randomized Multi-Shot Approximation of Discounted Cost Markov Decision Processes" authored by Parshan Pakiman, Selvaprabu Nadarajah, Negar Soheili, and Qihang Lin. The paper is available at [Management Science](https://ssrn.com/abstract=3512665).
+This repository hosts algorithm implementations and benchmarks discussed in the paper 'Self-Guided Approximate Linear Programs: Randomized Multi-Shot Approximation of Discounted Cost Markov Decision Processes' authored by Parshan Pakiman, Selvaprabu Nadarajah, Negar Soheili, and Qihang Lin, available at [Management Science](https://ssrn.com/abstract=3512665). Specifcally, it includes implementations of following methods:    
 
-The included algorithms comprise the Feature-based Approximate Linear Program (FALP), Self-guided FALP, Policy-guided FALP, and Least Squares Monte Carlo (LSM). Additionally, the repository incorporates two algorithms for computing the lower bound on optimal policy cost and determining optimality gaps: Information Relaxation and Duality, alongside a heuristic based on constraint violation learning.
+- Feature-based Approximate Linear Program (FALP)
+- Self-guided FALP
+- Policy-guided FALP 
+- Least Squares Monte Carlo ([Longstaff and Schwartz 2001](https://doi.org/10.1093/rfs/14.1.113))
 
-To facilitate experimentation with these methods on specific Markov Decision Processes, this repository offers two applications: perishable inventory control and Bermudan options pricing. All results in the paper are based on these two applications.
+Furthermore, the repository includes implementations of two algorithms for computing a lower bound on the optimal policy cost. Integrating this lower bound with an upper bound derived from simulating a control policy enables the computation of an optimality gap on the policy's performance. These algorithms are: Information Relaxation and Duality ([Brown et al. 2010](https://doi.org/10.1287/opre.1090.0796)), and a heuristic based on Constraint Violation Learning ([Lin et al. 2020](https://doi.org/10.1287/mnsc.2019.3289)). This repository enables the comparison of the aforementioned methods across two applications: perishable inventory control and Bermudan options pricing. Please note that the code provided here can be used to compute control policies and bounds for other Markov Decision Processes.
 
+
+<br>
 
 ## How to use this repository?
-The steps detailed below are designed for Mac OS 14.1.2 and Ubuntu 20.04 systems. Windows users are encouraged to create similar procedures accordingly.
 
-1. Download the [repository](https://github.com/Multi-Shot-Approximation-of-MDPs/Self-Guided-ALPs-Discounted-Cost) on your local system and extract the zip file.
+The following steps are tailored for macOS and Ubuntu users. Windows users may adapt and create similar procedures suitable for their operating system
 
-2. Open *Terminal* on your machine.
+1. Download the [repository](https://github.com/Multi-Shot-Approximation-of-MDPs/Self-Guided-ALPs-Discounted-Cost) on your local system and extract the zip file. For ease of reference, we assume the extracted files are stored in the following path: `/Desktop/Self-Guided-ALPs-Discounted-Cost-master`.
+
+2. Open `Terminal` on your machine and run the following code:
+   ```
+   cd  /Desktop/Self-Guided-ALPs-Discounted-Cost-master
+   ```
 
 3. Please check the version of your Python. For example, run the code below:
-```
-python3 --version
-```
+    ```
+    python3 --version
+    ```
 
-4. Please confirm that Python 3.10.6 is installed on your machine. There are various methods available for installing Python. We leave this step to the user's discretion.
+4. Please confirm that `Python 3.10` or above is installed on your machine. There are different methods available for installing Python. We leave this step to the user's discretion.
 
-5. Create a virtual environment called "ALP". For example, use the following code:
-```
-python -m venv ALP   
-```
+5. Create a virtual Python environment and name it `ALP`. For example, use the following code:
+    ```
+    python -m venv ALP   
+    ```
 
-6. Activate the ALP environment as follows
-```
-source ALP/bin/activate
-``` 
+6. Activate the `ALP` environment as follows:
+    ```
+    source ALP/bin/activate
+    ``` 
 
-7. We use pip to showcase how to use this package; however, users can utilize alternatives. If opting for pip, please use the following code to update it: 
-```
-pip install --upgrade pip
-```
+7. This code relies on several Python packages. We utilize `pip` for their installation, but users have the flexibility to explore alternative methods. If choosing `pip`, please use the following code for its update:
+    ```
+    pip install --upgrade pip
+    ```
 
-7. Please install the following libraries on the ALP environment using pip:
-    - numpy (python -m pip install numpy)
-    - pandas (python -m pip install pandas)
-    - scipy (python -m pip install scipy)
-    - numba (python -m pip install numba)
-    - multiprocessing (python -m pip install multiprocessing)
-    - tqdm (python -m pip install tqdm)
-    - emcee (python -m pip install emcee) 
-    - sampyl (python -m pip install sampyl)
-    - importlib (python -m pip install importlib)
-    - sampyl_mcmc (python -m pip install sampyl_mcmc)
-    - nengo (python -m pip install nengo) 
-    - gurobipy (python -m pip install gurobipy)
+8.  Please install the following libraries on the `ALP` environment:
+    - `numpy`
+    - `pandas`
+    - `scipy`
+    - `numba`
+    - `tqdm`
+    - `emcee`
+    - `sampyl`
+    - `importlib`
+    - `sampyl_mcmc`
+    - `nengo`
+    - `gurobipy`
+    
+    For instance, run the following command to install all the aforementioned libraries:
+    ```
+    python -m pip install numpy pandas scipy numba tqdm emcee sampyl importlib sampyl_mcmc nengo gurobipy
+    ```
 
+9.  This repository depends on Gurobi for solving large-scale linear programs. Please ensure that Gurobi (`gurobipy`) is installed along with its corresponding license. If you are affiliated with academia, Gurobi provides a free academic license, accessible through [this page](https://www.gurobi.com/academia/academic-program-and-licenses/). In some cases, an error might occur when running the `grbgetkey` code to activate your license. Refer to [this](https://support.gurobi.com/hc/en-us/articles/360040113232-How-do-I-resolve-the-error-grbgetkey-command-not-found-or-grbgetkey-is-not-recognized-) troubleshooting page for assistance with resolving this issue. If the issue persists, consider installing Gurobi using `conda` instead of `pip`. You can use the following code as an example:
+    ```
+    conda install -c gurobi gurobi
+    grbgetkey xxxxxxxx-xxxx-xxxx-xxxx-xxxxxxxxxxxx
+    ```
 
-8. This repository relies on Gurobi for solving large-scale linear programs. Please ensure the installation of the Gurobi and its license. If you're affiliated with academia, Gurobi offers a free academic license. For further details, visit [this page](https://www.gurobi.com/academia/academic-program-and-licenses/).
-
-
-9. Provided that the ALP Python environment and Gurobi are correctly installed, you can employ the following code to solve test instances of perishable inventory control application. Please run the following code:
-```
+10. Provided that the `ALP` environment and Gurobi are correctly installed, you can employ the following code to solve test instances of perishable inventory control application. Please run the following code:
+    ```
     ./run_PIC.sh
+    ```
+    The `run_PIC.sh` file solves the first instance of the perishable inventory control problem using the FALP algorithm with 20 random Fourier features, where FALP is fomrulated using a uniform state-relevance distribution (refer to the paper and code for details). You can find the specifications (e.g., cost parameters) of this instance under the path `MDP/PIC/Instances/instance_1.py`. To solve this instance using an alternate algorithm, you can modify the file `run_PIC.sh`. For instance, changing the `algo_name` from `FALP` to `SG-FALP` in this file and rerunning `run_PIC.sh` will display the output for the self-guided FALP algorithm applied to this instance. A screenshot of the output of these algorithms is attached below:
+    <img src="output.png">
+
+11.  To solve the test instance of Bermudan options pricing problem, please run `run_BerOpt.sh` file.
+
+<br>
+
+## How to adap this repository?
+
+To apply the algorithms from this repository to other problem instances or customize algorithm configurations, users should make adjustments within the `run_PIC.sh` and `run_BerOpt.sh` files. These files enable the modification of algorithm and simulation parameters. For example, a copy of `run_PIC.sh` is provided below:
+```bash
+#!/usr/bin/env bash
+mdp_name                    ='PIC'
+algo_name                   ='FALP'             #FALP, PG-FALP, SG-FALP
+basis_func_type             ='fourier'          #relu, fourier, lns, stump
+max_num_constr              =200000
+max_basis_num               =20
+batch_size                  =5
+num_cpu_core                =8
+state_relevance_inner_itr   =5
+for instance_number in 1; do
+    for seed in 111; do
+        python main_PIC.py $mdp_name $algo_name $basis_func_type $instance_number $max_num_constr $max_basis_num \
+            $batch_size $num_cpu_core $seed $state_relevance_inner_itr
+    done
+done
 ```
 
-10. The provided code solves instance number 1 using the FALP algorithm with 20 random Fourier features employing a uniform state-relevance distribution. You can find the specifications of instance number 1 under *MDP/PIC/Instances/instance_1.py*. To solve this instance using an alternate algorithm, you can modify the file *run_PIC.sh*. For instance, changing the *algo_name* from "FALP" to "SG-FALP" in this file and rerunning *run_PIC.sh* will display the output for the self-guided FALP algorithm applied to the instance number 1. A screenshot of the output of these algorithms is attached below:
+<br>
 
-<img src="output.png">
+## Appendix 
 
-11. To solve the test instance of Bermudan options pricing problem, please run the file named *run_BerOpt.sh*. 
-```
-    ./run_BerOpt.sh
-```
+This code has undergone testing on two systems:
+- 2021 MacBook Pro:
+    - CPU: M1 Pro
+    - Memory: 16 GB
+    - OS: Mac OS 14.1.2
+- 2022 Mac Studio:
+    - CPU: M1 Max
+    - Memory: 64 GB
+    - OS: Mac OS 14.1.1
 
-
-12. To work with different instances or employ alternative algorithms provided in this repository, users need to make adjustments in the following files: *run_PIC.sh* and *run_BerOpt.sh*. 
-
-
-
-## Appendix
-
-This package has been tested on a 2021 MacBook Pro featuring an M1 Pro CPU with 16 GB of memory, running Mac OS 14.1.2. Below is the list of Python package versions used during the testing of this repository.
+Below is the list of Python package versions utilized during the testing phase of this repository:
 
 |  Package         | Version      |
 |-----------------:|--------------|
@@ -103,5 +146,6 @@ This package has been tested on a 2021 MacBook Pro featuring an M1 Pro CPU with 
 | six              | 1.16.0       |
 |  tqdm            | 4.66.1       |
 | tzdata           | 2023.3       |
+
 
 ---
