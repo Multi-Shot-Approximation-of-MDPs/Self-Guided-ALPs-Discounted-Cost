@@ -1,11 +1,15 @@
-#!/usr/bin/env python3
-# -*- coding: utf-8 -*-
-"""
-Created on Mon Jan 30 10:15:15 2023
+# -*- coding: utf-8 -*-clear
 
-@author: parshan
-"""
 
+"""
+-------------------------------------------------------------------------------
+
+    Authors:    Parshan Pakiman  | https://parshanpakiman.github.io/homepage/
+                Selva Nadarajah  | https://selvan.people.uic.edu/
+                         
+    Licensing Information: The MIT License
+-------------------------------------------------------------------------------
+"""
 
 import pandas as pd
 import numpy as np
@@ -53,7 +57,7 @@ def plot():
                mpatches.Rectangle((0,0),.1,5,color='green',alpha=.2,label='Mean optimality gap $\%$')
         ]
     
-    for instance_itr,instance in enumerate(['45','46']):
+    for instance_itr,instance in enumerate(['19','20']):
         
         path        = '../Output/PIC/instance_' + instance
         file_name   = lambda seed: '/PIC_fourier_SGFALP_uniform_non_adaptive' + \
