@@ -1,9 +1,10 @@
 # Self-guided Approximate Linear Programs
-###### **Last updated on:** `May 10, 2024`
-###### **Topics:** `approximate dynamic programming`, `approximate linear programming`, `model-based reinforcement learning`, `random Fourier features`, `inventory management`, `options pricing`.
+###### **Last updated on:** <span style="color:purple">May 10, 2024</span>
+###### **Topics:** <span style="color:purple"> approximate dynamic programming, approximate linear programming, model-based reinforcement learning, random Fourier features, inventory management, options pricing.</span>
 ---
 
 
+<br>
 <br>
 
 ## Introduction
@@ -19,18 +20,18 @@ Furthermore, the repository includes implementations of two algorithms for compu
 - Information Relaxation and Duality ([Brown et al. 2010](https://doi.org/10.1287/opre.1090.0796))
 - A heuristic based on Constraint Violation Learning ([Lin et al. 2020](https://doi.org/10.1287/mnsc.2019.3289))
 
-Integrating lower bounds with the upper bounds derived from simulating control policies enables the computation of optimality gaps. The optimality gap of a policy is the difference between the cost of this policy and the lower bound, expressed as a percentage of the lower bound. Moreover, this repository implements MDPs associated with the following applications:
+Integrating lower bounds with the upper bounds derived from simulating control policies enables the computation of optimality gaps. The optimality gap of a policy is the difference between the cost of this policy and the lower bound, expressed as a percentage of the lower bound. This repository implements MDPs associated with the following applications:
 - Perishable inventory control
 - Bermudan options pricing 
 
-**Note:** The code in this repository can be extended to other MDPs to compute control policies and lower bounds.
-
+**Note:** The code in this repository is relatively general and can be extended to other MDPs to compute control policies and lower bounds.
 
 
 
 <br>
+<br>
 
-## Instructions
+## Instruction
 
 The following steps are tailored for macOS and Ubuntu users. Windows users may adapt and create similar instructions suitable for their operating system.
 
@@ -94,56 +95,61 @@ The following steps are tailored for macOS and Ubuntu users. Windows users may a
     The `run_PIC.sh` file solves the first instance of the perishable inventory control problem using the FALP algorithm with 20 random Fourier features, where FALP is formulated using a uniform state-relevance distribution (refer to the paper and code for details). You can find the specifications (e.g., cost parameters) of this instance under the path `MDP/PIC/Instances/instance_1.py`. To solve this instance using an alternate algorithm, you can modify the file `run_PIC.sh`. For instance, changing the `algo_name` from `FALP` to `SG-FALP` in this file and rerunning `run_PIC.sh` will display the output for the self-guided FALP algorithm applied to this instance. A screenshot of the output of these algorithms is attached below:
     <img src="output.png">
 
-11.  To solve the test instance of Bermudan options pricing problem, please run `run_BerOpt.sh` file.
+11.  Running file `run_BerOpt.sh` produces the output of the algorithms for Instance 1 of the Bermudan options pricing.
 
 <br>
-
+<br>
 
 ## Replication
 
-In this section, we explain how to replicate the tables and figures in the paper. 
-
-**Perishable inventory control problem:** In the paper, we considere four models for perishable inventory control instances
-
+The code in this repository can be directly used to replicate the tables and figures in the paper. For perishable inventory control problem instances, we consider four  methods:
 - $\text{ALP}^{\text{LNS}}$: the standard ALP model formulated using basis functions described in [Lin et al. 2020](https://doi.org/10.1287/mnsc.2019.3289).
-- $\text{FALP}$: a randomized ALP model formulated using random basis functions in $\S3$  of the paper.
+- $\text{FALP}$: a randomized ALP model described in $\S3$ of the paper.
 - $\text{FALP}^{\text{PG}}$: policy-guided FALP model described in Algorithm 1 of the paper.
 - $\text{FALP}^{\text{SG}}$: self-guided FALP model described in Algorithm 2 of the paper.
 
-We test these method on 12 instances with the state space dimension of 3, 6 instances with the state space dimension of 5, and 6 instances with the state space dimension of 10. We compute for each instance-method pair  lower and upper bounds for 10 different trials. These 10 trials are captured by the parameter <font color="red">seed</font> in the file `run_PIC.sh`. We vary it within the candidate set <font color="Green">{111, 222, 333, 444, 555, 666, 777, 888, 999, 1010}</font>. Then, we considered the average of lower and upper bounds across these trials for each method-instance pair. We desrcibe below how to change the other parameters in `run_PIC.sh` to obtain each table and figure in the paper.
+For the Bermudan options pricing problem, we consider methods $\text{FALP}$ and $\text{FALP}^{\text{SG}}$, in addition to the following ones:
+
+- $\text{LSM}$: Least quares Monte Carlo ([Longstaff and Schwartz 2001](https://doi.org/10.1093/rfs/14.1.113)) that is implemented in file `LSM.py`.
+- $\text{ALP}^{\text{DFM}}$: the standard ALP model formulated using basis functions described in [Desai et al. 2012](https://pubsonline.informs.org/doi/10.1287/mnsc.1120.1551).
+
+We test these methods on different sets of instances described in the paper. To obtain the tables and figures in the paper, the parameters of two files, `run_PIC.sh` and `run_BerOpt.sh`, should be modified. We compute the lower and upper bounds for each instance-method pair across ten different trials. Each of these trials is specified by the value of parameter **seed** that is varied in {111, 222, 333, 444, 555, 666, 777, 888, 999, 1010}. For each method-instance-trial,  we compute the lower and upper bounds and then the averages of these bounds across the trials for each method-instance pair. Below, we describe the other parameters in `run_PIC.sh` and `run_BerOpt.sh` to obtain each table and figur in the paper.
 
 
 - **Table 2:** Compares  $\text{ALP}^{\text{LNS}}$ and $\text{FALP}$ with on 12 instances. To replicate this table, please run `run_PIC.sh` after modifying the following parameters:
 
-    |                |  $\text{ALP}^{\text{LNS}}$ | $\text{FALP}$  |
+    |  Parameter name in `run_PIC.sh`             |  $\text{ALP}^{\text{LNS}}$ | $\text{FALP}$  |
     |--------------  |:-------------:|:------------------------:|
     |   algo_name    |     FALP      |           FALP           |
     | basis_func_type|       lns     |           fourier        |
     | max_basis_num  |      150      |           150            |
     |  batch_size    |      150      |           150            |
     |  state_relevance_inner_itr    |      0      |      0      | 
-    |instance_number | 1 2 3 4 5 6 7 8 9 10 11 12 | 1 2 3 4 5 6 7 8 9 10 11 12 |
+    |instance_number | {1, 2, ..., 12} | {1, 2, ..., 12} |
     
     Please note that `main.py` atomatically sets the value of  parameters **max_basis_num** and **batch_size** for each instance.
 
+<br>
 
 
 - **Table 3:** Compares four models $\text{ALP}^{\text{LNS}}$, $\text{FALP}$,  $\text{FALP}^{\text{PG}}$, and  $\text{FALP}^{\text{SG}}$ on 6 instances. To replicate this table, please run `run_PIC.sh` after modifying the following parameters:
 
-    |                | $\text{ALP}^{\text{LNS}}$ | $\text{FALP}$ | $\text{FALP}^{\text{PG}}$ | $\text{FALP}^{\text{SG}}$ |
+    |   Parameter name in `run_PIC.sh`             | $\text{ALP}^{\text{LNS}}$ | $\text{FALP}$ | $\text{FALP}^{\text{PG}}$ | $\text{FALP}^{\text{SG}}$ |
     |:--------------:|:-------------:|:-------------:|:------------------------:|:------------------------:|
     |                |               |               |                           |                         |
     |   algo_name    |     FALP      |     FALP      |           PG-FALP         |           SG-FALP       |
     | basis_func_type|     lns       |    fourier    |           fourier         |          fourier        |
     | max_basis_num  |      300      |      300      |           300             |           300           |
     |  batch_size    |      300      |      300      |           50              |           300           |
-    |  state_relevance_inner_itr    |      0      |      0      |           0    |           5             |
-    |instance_number | 13 14 15 16 17 18 | 13 14 15 16 17 18 | 13 14 15 16 17 18 | 13 14 15 16 17 18 |
+    |  state_relevance_inner_itr     |      0      |      0      |           0    |           5             |
+    |instance_number | {13, 14,...,18} | {13, 14,...,18}  | {13, 14,...,18}  | {13, 14,...,18}  |
+
+<br>
 
 - **Table 4:** Compares four models $\text{ALP}^{\text{LNS}}$, $\text{FALP}$ with $600$ random basis functions,  $\text{FALP}$ with $1000$ random basis functions, and $\text{FALP}^{\text{SG}}$ on 6 instances. To replicate this table, please run `run_PIC.sh` after modifying the following parameters:
 
 
-    |                | $\text{ALP}^{\text{LNS}}$ | $\text{FALP}_{600}$ | $\text{FALP}_{1000}$ | $\text{FALP}^{\text{SG}}$ |
+    |   Parameter name in `run_PIC.sh`             | $\text{ALP}^{\text{LNS}}$ | $\text{FALP}_{600}$ | $\text{FALP}_{1000}$ | $\text{FALP}^{\text{SG}}$ |
     |:--------------:|:-------------:|:-------------:|:------------------------:|:------------------------:|
     |                |               |               |                           |                         |
     |   algo_name    |     FALP      |     FALP      |           PG-FALP         |           SG-FALP       |
@@ -151,45 +157,24 @@ We test these method on 12 instances with the state space dimension of 3, 6 inst
     | max_basis_num  |      600      |      600      |           1000             |           600           |
     |  batch_size    |      600      |      600      |           1000              |           100           |
     |  state_relevance_inner_itr    |      0      |      0      |           0    |           0             |
-    |instance_number | 19 20 21 22 23 24 | 19 20 21 22 23 24 | 19 20 21 22 23 24 | 19 20 21 22 23 24 |
-
-- **Figure 2:** Plots the distribution of upper and lower bounds across 10 trials for 6 iterations with increasing number of random basis functions in $\text{FALP}^{\text{SG}}$. It plots these distribution based on the output of this algorithm in Table 4 for isntances 19 and 20. Upon obtaining the results for instances 19 and 20, one can run file `SG_FALP_progress_plot.py` to obtain Figure 2.
-
-
-**Bermudan options pricing problem:** In Table 5, we consider four models:
-
-- Least quares Monte Carlo ([Longstaff and Schwartz 2001](https://doi.org/10.1093/rfs/14.1.113)) that is implemented in file `LSM.py`.
-- $\text{ALP}^{\text{DFM}}$: the standard ALP model formulated using basis functions described in [Desai, Farias, and Moallemi 2012](https://pubsonline.informs.org/doi/10.1287/mnsc.1120.1551).
-- $\text{FALP}$: a randomized ALP model formulated using random basis functions in $\S3$  of the paper.
-- $\text{FALP}^{\text{PG}}$: policy-guided FALP model described in Algorithm 1 of the paper.
-- $\text{FALP}^{\text{SG}}$: self-guided FALP model described in Algorithm 2 of the paper.
-
-
-
-
-
-## How to adap this repository?
-
-To apply the algorithms from this repository to other problem instances or customize algorithm configurations, users should make adjustments within the `run_PIC.sh` and `run_BerOpt.sh` files. These files enable the modification of the algorithm and simulation parameters. For example, a copy of `run_PIC.sh` is provided below:
-```bash
-#!/usr/bin/env bash
-mdp_name                    ='PIC'
-algo_name                   ='FALP'             #FALP, PG-FALP, SG-FALP
-basis_func_type             ='fourier'          #relu, Fourier, lns, stump
-max_num_constr              =200000
-max_basis_num               =20
-batch_size                  =5
-num_cpu_core                =8
-state_relevance_inner_itr   =5
-for instance_number in 1; do
-    for seed in 111; do
-        python main_PIC.py $mdp_name $algo_name $basis_func_type $instance_number $max_num_constr $max_basis_num \
-            $batch_size $num_cpu_core $seed $state_relevance_inner_itr
-    done
-done
-```
+    |instance_number | {19, 20, ..., 24} | {19, 20, ..., 24} | {19, 20, ..., 24} | {19, 20, ..., 24} |
 
 <br>
+
+- **Figure 2:** Depicts the violin plot of upper and lower bounds across 10 trials for 6 iterations of algorithm $\text{FALP}^{\text{SG}}$ on two instances: Instance 19 and Instance 20. Upon running this algorithm on these instances, several files will be generated under the paths `Output/PIC/instance_19` and `Output/PIC/instance_20`. Then, one can use the plotting function in `SG_FALP_progress_plot.py` to obtain Figure 2 based on these files.
+
+<br>
+
+
+ - **Table 5:** Presents performance of $\text{LSM}$, $\text{ALP}^{\text{DFM}}$, $\text{FALP}$, and $\text{FALP}^{\text{SG}}$ on 9 instances. To obtain this table, please modify file `run_BerOpt.sh` by letting **instance_number** take values in {1, 2, ..., 9} and **instance_number** take values in {1, 2, ..., 9} and **seed**  to take values in {111, 222, 333, 444, 555, 666, 777, 888, 999, 1010}.
+ 
+ 
+ 
+
+
+ <br>
+ <br>
+
 
 ## Appendix 
 
