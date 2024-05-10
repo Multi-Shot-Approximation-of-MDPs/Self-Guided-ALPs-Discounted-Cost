@@ -1,0 +1,558 @@
+<!DOCTYPE html>
+        <html>
+        <head>
+            <meta charset="UTF-8">
+            <title>Self-guided Approximate Linear Programs</title>
+            <style>
+/* From extension vscode.github */
+/*---------------------------------------------------------------------------------------------
+ *  Copyright (c) Microsoft Corporation. All rights reserved.
+ *  Licensed under the MIT License. See License.txt in the project root for license information.
+ *--------------------------------------------------------------------------------------------*/
+
+.vscode-dark img[src$=\#gh-light-mode-only],
+.vscode-light img[src$=\#gh-dark-mode-only],
+.vscode-high-contrast:not(.vscode-high-contrast-light) img[src$=\#gh-light-mode-only],
+.vscode-high-contrast-light img[src$=\#gh-dark-mode-only] {
+	display: none;
+}
+
+</style>
+            <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/katex/dist/katex.min.css">
+<link href="https://cdn.jsdelivr.net/npm/katex-copytex@latest/dist/katex-copytex.min.css" rel="stylesheet" type="text/css">
+        <link rel="stylesheet" href="https://cdn.jsdelivr.net/gh/Microsoft/vscode/extensions/markdown-language-features/media/markdown.css">
+<link rel="stylesheet" href="https://cdn.jsdelivr.net/gh/Microsoft/vscode/extensions/markdown-language-features/media/highlight.css">
+<style>
+            body {
+                font-family: -apple-system, BlinkMacSystemFont, 'Segoe WPC', 'Segoe UI', system-ui, 'Ubuntu', 'Droid Sans', sans-serif;
+                font-size: 14px;
+                line-height: 1.6;
+            }
+        </style>
+        <style>
+.task-list-item {
+    list-style-type: none;
+}
+
+.task-list-item-checkbox {
+    margin-left: -20px;
+    vertical-align: middle;
+    pointer-events: none;
+}
+</style>
+<style>
+:root {
+  --color-note: #0969da;
+  --color-tip: #1a7f37;
+  --color-warning: #9a6700;
+  --color-severe: #bc4c00;
+  --color-caution: #d1242f;
+  --color-important: #8250df;
+}
+
+</style>
+<style>
+@media (prefers-color-scheme: dark) {
+  :root {
+    --color-note: #2f81f7;
+    --color-tip: #3fb950;
+    --color-warning: #d29922;
+    --color-severe: #db6d28;
+    --color-caution: #f85149;
+    --color-important: #a371f7;
+  }
+}
+
+</style>
+<style>
+.markdown-alert {
+  padding: 0.5rem 1rem;
+  margin-bottom: 16px;
+  color: inherit;
+  border-left: .25em solid #888;
+}
+
+.markdown-alert>:first-child {
+  margin-top: 0
+}
+
+.markdown-alert>:last-child {
+  margin-bottom: 0
+}
+
+.markdown-alert .markdown-alert-title {
+  display: flex;
+  font-weight: 500;
+  align-items: center;
+  line-height: 1
+}
+
+.markdown-alert .markdown-alert-title .octicon {
+  margin-right: 0.5rem;
+  display: inline-block;
+  overflow: visible !important;
+  vertical-align: text-bottom;
+  fill: currentColor;
+}
+
+.markdown-alert.markdown-alert-note {
+  border-left-color: var(--color-note);
+}
+
+.markdown-alert.markdown-alert-note .markdown-alert-title {
+  color: var(--color-note);
+}
+
+.markdown-alert.markdown-alert-important {
+  border-left-color: var(--color-important);
+}
+
+.markdown-alert.markdown-alert-important .markdown-alert-title {
+  color: var(--color-important);
+}
+
+.markdown-alert.markdown-alert-warning {
+  border-left-color: var(--color-warning);
+}
+
+.markdown-alert.markdown-alert-warning .markdown-alert-title {
+  color: var(--color-warning);
+}
+
+.markdown-alert.markdown-alert-tip {
+  border-left-color: var(--color-tip);
+}
+
+.markdown-alert.markdown-alert-tip .markdown-alert-title {
+  color: var(--color-tip);
+}
+
+.markdown-alert.markdown-alert-caution {
+  border-left-color: var(--color-caution);
+}
+
+.markdown-alert.markdown-alert-caution .markdown-alert-title {
+  color: var(--color-caution);
+}
+
+</style>
+        
+        </head>
+        <body class="vscode-body vscode-light">
+            <h1 id="self-guided-approximate-linear-programs">Self-guided Approximate Linear Programs</h1>
+<h6 id="last-updated-on-may-10-2024"><strong>Last updated on:</strong> <span style="color:purple">May 10, 2024</span></h6>
+<h6 id="topics--approximate-dynamic-programming-approximate-linear-programming-model-based-reinforcement-learning-random-fourier-features-inventory-management-options-pricing"><strong>Topics:</strong> <span style="color:purple"> approximate dynamic programming, approximate linear programming, model-based reinforcement learning, random Fourier features, inventory management, options pricing.</span></h6>
+<hr>
+<br>
+<br>
+<h2 id="introduction">Introduction</h2>
+<p>This repository hosts algorithm implementations and benchmarks discussed in the paper <strong>Self-Guided Approximate Linear Programs: Randomized Multi-Shot Approximation of Discounted Cost Markov Decision Processes</strong> authored by <a href="https://parshanpakiman.github.io/">Parshan Pakiman</a>, <a href="https://selvan.people.uic.edu/">Selva Nadarajah</a>, <a href="https://business.uic.edu/profiles/negar-soheili/">Negar Soheili</a>, and <a href="https://tippie.uiowa.edu/people/qihang-lin">Qihang Lin</a>, available at <a href="https://ssrn.com/abstract=3512665">Management Science</a>. Specifically, this repository includes implementations of the following algorithms for computing control policies in Markov decision processes (MDPs):</p>
+<ul>
+<li>Feature-based Approximate Linear Program (FALP)</li>
+<li>Self-guided FALP</li>
+<li>Policy-guided FALP</li>
+<li>Least Squares Monte Carlo (<a href="https://doi.org/10.1093/rfs/14.1.113">Longstaff and Schwartz 2001</a>)</li>
+</ul>
+<p>Furthermore, the repository includes implementations of two algorithms for computing lower bounds on the optimal policy cost of MDPs:</p>
+<ul>
+<li>Information Relaxation and Duality (<a href="https://doi.org/10.1287/opre.1090.0796">Brown et al. 2010</a>)</li>
+<li>A heuristic based on Constraint Violation Learning (<a href="https://doi.org/10.1287/mnsc.2019.3289">Lin et al. 2020</a>)</li>
+</ul>
+<p>Integrating lower bounds with the upper bounds derived from simulating control policies enables the computation of optimality gaps. The optimality gap of a policy is the difference between the cost of this policy and the lower bound, expressed as a percentage of the lower bound. This repository implements MDPs associated with the following applications:</p>
+<ul>
+<li>Perishable inventory control</li>
+<li>Bermudan options pricing</li>
+</ul>
+<p><strong>Note:</strong> The code in this repository is relatively general and can be extended to other MDPs to compute control policies and lower bounds.</p>
+<br>
+<br>
+<h2 id="instruction">Instruction</h2>
+<p>The following steps are tailored for macOS and Ubuntu users. Windows users may adapt and create similar instructions suitable for their operating system.</p>
+<ol>
+<li>
+<p>Download the <a href="https://github.com/Multi-Shot-Approximation-of-MDPs/Self-Guided-ALPs-Discounted-Cost">repository</a> on your local system and extract the zip file. For ease of reference, we assume the extracted files are stored in the following path: <code>/Desktop/Self-Guided-ALPs-Discounted-Cost-master</code>.</p>
+</li>
+<li>
+<p>Open <code>Terminal</code> on your machine and run the following code:</p>
+<pre><code>cd  /Desktop/Self-Guided-ALPs-Discounted-Cost-master
+</code></pre>
+</li>
+<li>
+<p>Please check the version of your Python. For example, run the code below:</p>
+<pre><code>python3 --version
+</code></pre>
+</li>
+<li>
+<p>Please confirm that <code>Python 3.10</code> or above is installed on your machine. There are different ways to install Python. We leave this step to the user's discretion.</p>
+</li>
+<li>
+<p>Create a virtual Python environment and name it <code>ALP</code>. For example, use the following code:</p>
+<pre><code>python -m venv ALP   
+</code></pre>
+</li>
+<li>
+<p>Activate the <code>ALP</code> environment as follows:</p>
+<pre><code>source ALP/bin/activate
+</code></pre>
+</li>
+<li>
+<p>This code relies on several Python packages. We utilize <code>pip</code> for their installation, but users can explore alternative methods. If choosing <code>pip</code>, please use the following code for its update:</p>
+<pre><code>pip install --upgrade pip
+</code></pre>
+</li>
+<li>
+<p>Please install the following libraries on the <code>ALP</code> environment:</p>
+<ul>
+<li><code>numpy</code></li>
+<li><code>pandas</code></li>
+<li><code>scipy</code></li>
+<li><code>numba</code></li>
+<li><code>tqdm</code></li>
+<li><code>emcee</code></li>
+<li><code>sampyl</code></li>
+<li><code>importlib</code></li>
+<li><code>sampyl_mcmc</code></li>
+<li><code>nengo</code></li>
+<li><code>gurobipy</code></li>
+</ul>
+<p>For instance, run the following command to install all the above libraries:</p>
+<pre><code>python -m pip install numpy pandas scipy numba tqdm emcee sampyl importlib sampyl_mcmc nengo gurobipy
+</code></pre>
+</li>
+<li>
+<p>This repository uses <a href="https://www.gurobi.com/">Gurobi</a> for solving large-scale linear programs. Please ensure that Gurobi (<code>gurobipy</code>) is installed along with its corresponding license. If you are affiliated with academia, Gurobi provides a free academic license, accessible through <a href="https://www.gurobi.com/academia/academic-program-and-licenses/">this page</a>. In some cases, an error might occur when running the <code>grbgetkey</code> code to activate your license. Refer to <a href="https://support.gurobi.com/hc/en-us/articles/360040113232-How-do-I-resolve-the-error-grbgetkey-command-not-found-or-grbgetkey-is-not-recognized-">this</a> troubleshooting page for assistance with resolving this issue. If the issue persists, consider installing Gurobi using <code>conda</code> instead of <code>pip</code>. You can use the following code as an example:</p>
+<pre><code>conda install -c gurobi gurobi
+grbgetkey xxxxxxxx-xxxx-xxxx-xxxx-xxxxxxxxxxxx
+</code></pre>
+</li>
+<li>
+<p>Provided that the <code>ALP</code> environment and Gurobi are correctly installed, you can use the following code to solve test instances of perishable inventory control applications. Please run the following code:</p>
+<pre><code>./run_PIC.sh
+</code></pre>
+<p>The <code>run_PIC.sh</code> file solves the first instance of the perishable inventory control problem using the FALP algorithm with 20 random Fourier features, where FALP is formulated using a uniform state-relevance distribution (refer to the paper and code for details). You can find the specifications (e.g., cost parameters) of this instance under the path <code>MDP/PIC/Instances/instance_1.py</code>. To solve this instance using an alternate algorithm, you can modify the file <code>run_PIC.sh</code>. For instance, changing the <code>algo_name</code> from <code>FALP</code> to <code>SG-FALP</code> in this file and rerunning <code>run_PIC.sh</code> will display the output for the self-guided FALP algorithm applied to this instance. A screenshot of the output of these algorithms is attached below:
+<img src="file:////Users/parshan/Library/CloudStorage/Dropbox/Parshan's Files/Github/Self-Guided-ALPs-Discounted-Cost/output.png"></p>
+</li>
+<li>
+<p>Running file <code>run_BerOpt.sh</code> produces the output of the algorithms for Instance 1 of the Bermudan options pricing.</p>
+</li>
+</ol>
+<br>
+<br>
+<h2 id="replication">Replication</h2>
+<p>The code in this repository can be directly used to replicate the tables and figures in the paper. For perishable inventory control problem instances, we consider four  methods:</p>
+<ul>
+<li><span class="katex"><span class="katex-mathml"><math xmlns="http://www.w3.org/1998/Math/MathML"><semantics><mrow><msup><mtext>ALP</mtext><mtext>LNS</mtext></msup></mrow><annotation encoding="application/x-tex">\text{ALP}^{\text{LNS}}</annotation></semantics></math></span><span class="katex-html" aria-hidden="true"><span class="base"><span class="strut" style="height:0.9146em;"></span><span class="mord"><span class="mord text"><span class="mord">ALP</span></span><span class="msupsub"><span class="vlist-t"><span class="vlist-r"><span class="vlist" style="height:0.9146em;"><span style="top:-3.1362em;margin-right:0.05em;"><span class="pstrut" style="height:2.7em;"></span><span class="sizing reset-size6 size3 mtight"><span class="mord mtight"><span class="mord text mtight"><span class="mord mtight">LNS</span></span></span></span></span></span></span></span></span></span></span></span></span>: the standard ALP model formulated using basis functions described in <a href="https://doi.org/10.1287/mnsc.2019.3289">Lin et al. 2020</a>.</li>
+<li><span class="katex"><span class="katex-mathml"><math xmlns="http://www.w3.org/1998/Math/MathML"><semantics><mrow><mtext>FALP</mtext></mrow><annotation encoding="application/x-tex">\text{FALP}</annotation></semantics></math></span><span class="katex-html" aria-hidden="true"><span class="base"><span class="strut" style="height:0.6833em;"></span><span class="mord text"><span class="mord">FALP</span></span></span></span></span>: a randomized ALP model described in <span class="katex"><span class="katex-mathml"><math xmlns="http://www.w3.org/1998/Math/MathML"><semantics><mrow><mi mathvariant="normal">§</mi><mn>3</mn></mrow><annotation encoding="application/x-tex">\S3</annotation></semantics></math></span><span class="katex-html" aria-hidden="true"><span class="base"><span class="strut" style="height:0.8889em;vertical-align:-0.1944em;"></span><span class="mord">§3</span></span></span></span> of the paper.</li>
+<li><span class="katex"><span class="katex-mathml"><math xmlns="http://www.w3.org/1998/Math/MathML"><semantics><mrow><msup><mtext>FALP</mtext><mtext>PG</mtext></msup></mrow><annotation encoding="application/x-tex">\text{FALP}^{\text{PG}}</annotation></semantics></math></span><span class="katex-html" aria-hidden="true"><span class="base"><span class="strut" style="height:0.9146em;"></span><span class="mord"><span class="mord text"><span class="mord">FALP</span></span><span class="msupsub"><span class="vlist-t"><span class="vlist-r"><span class="vlist" style="height:0.9146em;"><span style="top:-3.1362em;margin-right:0.05em;"><span class="pstrut" style="height:2.7em;"></span><span class="sizing reset-size6 size3 mtight"><span class="mord mtight"><span class="mord text mtight"><span class="mord mtight">PG</span></span></span></span></span></span></span></span></span></span></span></span></span>: policy-guided FALP model described in Algorithm 1 of the paper.</li>
+<li><span class="katex"><span class="katex-mathml"><math xmlns="http://www.w3.org/1998/Math/MathML"><semantics><mrow><msup><mtext>FALP</mtext><mtext>SG</mtext></msup></mrow><annotation encoding="application/x-tex">\text{FALP}^{\text{SG}}</annotation></semantics></math></span><span class="katex-html" aria-hidden="true"><span class="base"><span class="strut" style="height:0.9146em;"></span><span class="mord"><span class="mord text"><span class="mord">FALP</span></span><span class="msupsub"><span class="vlist-t"><span class="vlist-r"><span class="vlist" style="height:0.9146em;"><span style="top:-3.1362em;margin-right:0.05em;"><span class="pstrut" style="height:2.7em;"></span><span class="sizing reset-size6 size3 mtight"><span class="mord mtight"><span class="mord text mtight"><span class="mord mtight">SG</span></span></span></span></span></span></span></span></span></span></span></span></span>: self-guided FALP model described in Algorithm 2 of the paper.</li>
+</ul>
+<p>For the Bermudan options pricing problem, we consider methods <span class="katex"><span class="katex-mathml"><math xmlns="http://www.w3.org/1998/Math/MathML"><semantics><mrow><mtext>FALP</mtext></mrow><annotation encoding="application/x-tex">\text{FALP}</annotation></semantics></math></span><span class="katex-html" aria-hidden="true"><span class="base"><span class="strut" style="height:0.6833em;"></span><span class="mord text"><span class="mord">FALP</span></span></span></span></span> and <span class="katex"><span class="katex-mathml"><math xmlns="http://www.w3.org/1998/Math/MathML"><semantics><mrow><msup><mtext>FALP</mtext><mtext>SG</mtext></msup></mrow><annotation encoding="application/x-tex">\text{FALP}^{\text{SG}}</annotation></semantics></math></span><span class="katex-html" aria-hidden="true"><span class="base"><span class="strut" style="height:0.9146em;"></span><span class="mord"><span class="mord text"><span class="mord">FALP</span></span><span class="msupsub"><span class="vlist-t"><span class="vlist-r"><span class="vlist" style="height:0.9146em;"><span style="top:-3.1362em;margin-right:0.05em;"><span class="pstrut" style="height:2.7em;"></span><span class="sizing reset-size6 size3 mtight"><span class="mord mtight"><span class="mord text mtight"><span class="mord mtight">SG</span></span></span></span></span></span></span></span></span></span></span></span></span>, in addition to the following ones:</p>
+<ul>
+<li><span class="katex"><span class="katex-mathml"><math xmlns="http://www.w3.org/1998/Math/MathML"><semantics><mrow><mtext>LSM</mtext></mrow><annotation encoding="application/x-tex">\text{LSM}</annotation></semantics></math></span><span class="katex-html" aria-hidden="true"><span class="base"><span class="strut" style="height:0.6833em;"></span><span class="mord text"><span class="mord">LSM</span></span></span></span></span>: Least quares Monte Carlo (<a href="https://doi.org/10.1093/rfs/14.1.113">Longstaff and Schwartz 2001</a>) that is implemented in file <code>LSM.py</code>.</li>
+<li><span class="katex"><span class="katex-mathml"><math xmlns="http://www.w3.org/1998/Math/MathML"><semantics><mrow><msup><mtext>ALP</mtext><mtext>DFM</mtext></msup></mrow><annotation encoding="application/x-tex">\text{ALP}^{\text{DFM}}</annotation></semantics></math></span><span class="katex-html" aria-hidden="true"><span class="base"><span class="strut" style="height:0.9146em;"></span><span class="mord"><span class="mord text"><span class="mord">ALP</span></span><span class="msupsub"><span class="vlist-t"><span class="vlist-r"><span class="vlist" style="height:0.9146em;"><span style="top:-3.1362em;margin-right:0.05em;"><span class="pstrut" style="height:2.7em;"></span><span class="sizing reset-size6 size3 mtight"><span class="mord mtight"><span class="mord text mtight"><span class="mord mtight">DFM</span></span></span></span></span></span></span></span></span></span></span></span></span>: the standard ALP model formulated using basis functions described in <a href="https://pubsonline.informs.org/doi/10.1287/mnsc.1120.1551">Desai et al. 2012</a>.</li>
+</ul>
+<p>We test these methods on different sets of instances described in the paper. To obtain the tables and figures in the paper, the parameters of two files, <code>run_PIC.sh</code> and <code>run_BerOpt.sh</code>, should be modified. We compute the lower and upper bounds for each instance-method pair across ten different trials. Each of these trials is specified by the value of parameter <strong>seed</strong> that is varied in {111, 222, 333, 444, 555, 666, 777, 888, 999, 1010}. For each method-instance-trial,  we compute the lower and upper bounds and then the averages of these bounds across the trials for each method-instance pair. Below, we describe the other parameters in <code>run_PIC.sh</code> and <code>run_BerOpt.sh</code> to obtain each table and figur in the paper.</p>
+<ul>
+<li>
+<p><strong>Table 2:</strong> Compares  <span class="katex"><span class="katex-mathml"><math xmlns="http://www.w3.org/1998/Math/MathML"><semantics><mrow><msup><mtext>ALP</mtext><mtext>LNS</mtext></msup></mrow><annotation encoding="application/x-tex">\text{ALP}^{\text{LNS}}</annotation></semantics></math></span><span class="katex-html" aria-hidden="true"><span class="base"><span class="strut" style="height:0.9146em;"></span><span class="mord"><span class="mord text"><span class="mord">ALP</span></span><span class="msupsub"><span class="vlist-t"><span class="vlist-r"><span class="vlist" style="height:0.9146em;"><span style="top:-3.1362em;margin-right:0.05em;"><span class="pstrut" style="height:2.7em;"></span><span class="sizing reset-size6 size3 mtight"><span class="mord mtight"><span class="mord text mtight"><span class="mord mtight">LNS</span></span></span></span></span></span></span></span></span></span></span></span></span> and <span class="katex"><span class="katex-mathml"><math xmlns="http://www.w3.org/1998/Math/MathML"><semantics><mrow><mtext>FALP</mtext></mrow><annotation encoding="application/x-tex">\text{FALP}</annotation></semantics></math></span><span class="katex-html" aria-hidden="true"><span class="base"><span class="strut" style="height:0.6833em;"></span><span class="mord text"><span class="mord">FALP</span></span></span></span></span> with on 12 instances. To replicate this table, please run <code>run_PIC.sh</code> after modifying the following parameters:</p>
+<table>
+<thead>
+<tr>
+<th>Parameter name in <code>run_PIC.sh</code></th>
+<th style="text-align:center"><span class="katex"><span class="katex-mathml"><math xmlns="http://www.w3.org/1998/Math/MathML"><semantics><mrow><msup><mtext>ALP</mtext><mtext>LNS</mtext></msup></mrow><annotation encoding="application/x-tex">\text{ALP}^{\text{LNS}}</annotation></semantics></math></span><span class="katex-html" aria-hidden="true"><span class="base"><span class="strut" style="height:0.9146em;"></span><span class="mord"><span class="mord text"><span class="mord">ALP</span></span><span class="msupsub"><span class="vlist-t"><span class="vlist-r"><span class="vlist" style="height:0.9146em;"><span style="top:-3.1362em;margin-right:0.05em;"><span class="pstrut" style="height:2.7em;"></span><span class="sizing reset-size6 size3 mtight"><span class="mord mtight"><span class="mord text mtight"><span class="mord mtight">LNS</span></span></span></span></span></span></span></span></span></span></span></span></span></th>
+<th style="text-align:center"><span class="katex"><span class="katex-mathml"><math xmlns="http://www.w3.org/1998/Math/MathML"><semantics><mrow><mtext>FALP</mtext></mrow><annotation encoding="application/x-tex">\text{FALP}</annotation></semantics></math></span><span class="katex-html" aria-hidden="true"><span class="base"><span class="strut" style="height:0.6833em;"></span><span class="mord text"><span class="mord">FALP</span></span></span></span></span></th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td>algo_name</td>
+<td style="text-align:center">FALP</td>
+<td style="text-align:center">FALP</td>
+</tr>
+<tr>
+<td>basis_func_type</td>
+<td style="text-align:center">lns</td>
+<td style="text-align:center">fourier</td>
+</tr>
+<tr>
+<td>max_basis_num</td>
+<td style="text-align:center">150</td>
+<td style="text-align:center">150</td>
+</tr>
+<tr>
+<td>batch_size</td>
+<td style="text-align:center">150</td>
+<td style="text-align:center">150</td>
+</tr>
+<tr>
+<td>state_relevance_inner_itr</td>
+<td style="text-align:center">0</td>
+<td style="text-align:center">0</td>
+</tr>
+<tr>
+<td>instance_number</td>
+<td style="text-align:center">{1, 2, ..., 12}</td>
+<td style="text-align:center">{1, 2, ..., 12}</td>
+</tr>
+</tbody>
+</table>
+<p>Please note that <code>main.py</code> atomatically sets the value of  parameters <strong>max_basis_num</strong> and <strong>batch_size</strong> for each instance.</p>
+</li>
+</ul>
+<br>
+<ul>
+<li>
+<p><strong>Table 3:</strong> Compares four models <span class="katex"><span class="katex-mathml"><math xmlns="http://www.w3.org/1998/Math/MathML"><semantics><mrow><msup><mtext>ALP</mtext><mtext>LNS</mtext></msup></mrow><annotation encoding="application/x-tex">\text{ALP}^{\text{LNS}}</annotation></semantics></math></span><span class="katex-html" aria-hidden="true"><span class="base"><span class="strut" style="height:0.9146em;"></span><span class="mord"><span class="mord text"><span class="mord">ALP</span></span><span class="msupsub"><span class="vlist-t"><span class="vlist-r"><span class="vlist" style="height:0.9146em;"><span style="top:-3.1362em;margin-right:0.05em;"><span class="pstrut" style="height:2.7em;"></span><span class="sizing reset-size6 size3 mtight"><span class="mord mtight"><span class="mord text mtight"><span class="mord mtight">LNS</span></span></span></span></span></span></span></span></span></span></span></span></span>, <span class="katex"><span class="katex-mathml"><math xmlns="http://www.w3.org/1998/Math/MathML"><semantics><mrow><mtext>FALP</mtext></mrow><annotation encoding="application/x-tex">\text{FALP}</annotation></semantics></math></span><span class="katex-html" aria-hidden="true"><span class="base"><span class="strut" style="height:0.6833em;"></span><span class="mord text"><span class="mord">FALP</span></span></span></span></span>,  <span class="katex"><span class="katex-mathml"><math xmlns="http://www.w3.org/1998/Math/MathML"><semantics><mrow><msup><mtext>FALP</mtext><mtext>PG</mtext></msup></mrow><annotation encoding="application/x-tex">\text{FALP}^{\text{PG}}</annotation></semantics></math></span><span class="katex-html" aria-hidden="true"><span class="base"><span class="strut" style="height:0.9146em;"></span><span class="mord"><span class="mord text"><span class="mord">FALP</span></span><span class="msupsub"><span class="vlist-t"><span class="vlist-r"><span class="vlist" style="height:0.9146em;"><span style="top:-3.1362em;margin-right:0.05em;"><span class="pstrut" style="height:2.7em;"></span><span class="sizing reset-size6 size3 mtight"><span class="mord mtight"><span class="mord text mtight"><span class="mord mtight">PG</span></span></span></span></span></span></span></span></span></span></span></span></span>, and  <span class="katex"><span class="katex-mathml"><math xmlns="http://www.w3.org/1998/Math/MathML"><semantics><mrow><msup><mtext>FALP</mtext><mtext>SG</mtext></msup></mrow><annotation encoding="application/x-tex">\text{FALP}^{\text{SG}}</annotation></semantics></math></span><span class="katex-html" aria-hidden="true"><span class="base"><span class="strut" style="height:0.9146em;"></span><span class="mord"><span class="mord text"><span class="mord">FALP</span></span><span class="msupsub"><span class="vlist-t"><span class="vlist-r"><span class="vlist" style="height:0.9146em;"><span style="top:-3.1362em;margin-right:0.05em;"><span class="pstrut" style="height:2.7em;"></span><span class="sizing reset-size6 size3 mtight"><span class="mord mtight"><span class="mord text mtight"><span class="mord mtight">SG</span></span></span></span></span></span></span></span></span></span></span></span></span> on 6 instances. To replicate this table, please run <code>run_PIC.sh</code> after modifying the following parameters:</p>
+<table>
+<thead>
+<tr>
+<th style="text-align:center">Parameter name in <code>run_PIC.sh</code></th>
+<th style="text-align:center"><span class="katex"><span class="katex-mathml"><math xmlns="http://www.w3.org/1998/Math/MathML"><semantics><mrow><msup><mtext>ALP</mtext><mtext>LNS</mtext></msup></mrow><annotation encoding="application/x-tex">\text{ALP}^{\text{LNS}}</annotation></semantics></math></span><span class="katex-html" aria-hidden="true"><span class="base"><span class="strut" style="height:0.9146em;"></span><span class="mord"><span class="mord text"><span class="mord">ALP</span></span><span class="msupsub"><span class="vlist-t"><span class="vlist-r"><span class="vlist" style="height:0.9146em;"><span style="top:-3.1362em;margin-right:0.05em;"><span class="pstrut" style="height:2.7em;"></span><span class="sizing reset-size6 size3 mtight"><span class="mord mtight"><span class="mord text mtight"><span class="mord mtight">LNS</span></span></span></span></span></span></span></span></span></span></span></span></span></th>
+<th style="text-align:center"><span class="katex"><span class="katex-mathml"><math xmlns="http://www.w3.org/1998/Math/MathML"><semantics><mrow><mtext>FALP</mtext></mrow><annotation encoding="application/x-tex">\text{FALP}</annotation></semantics></math></span><span class="katex-html" aria-hidden="true"><span class="base"><span class="strut" style="height:0.6833em;"></span><span class="mord text"><span class="mord">FALP</span></span></span></span></span></th>
+<th style="text-align:center"><span class="katex"><span class="katex-mathml"><math xmlns="http://www.w3.org/1998/Math/MathML"><semantics><mrow><msup><mtext>FALP</mtext><mtext>PG</mtext></msup></mrow><annotation encoding="application/x-tex">\text{FALP}^{\text{PG}}</annotation></semantics></math></span><span class="katex-html" aria-hidden="true"><span class="base"><span class="strut" style="height:0.9146em;"></span><span class="mord"><span class="mord text"><span class="mord">FALP</span></span><span class="msupsub"><span class="vlist-t"><span class="vlist-r"><span class="vlist" style="height:0.9146em;"><span style="top:-3.1362em;margin-right:0.05em;"><span class="pstrut" style="height:2.7em;"></span><span class="sizing reset-size6 size3 mtight"><span class="mord mtight"><span class="mord text mtight"><span class="mord mtight">PG</span></span></span></span></span></span></span></span></span></span></span></span></span></th>
+<th style="text-align:center"><span class="katex"><span class="katex-mathml"><math xmlns="http://www.w3.org/1998/Math/MathML"><semantics><mrow><msup><mtext>FALP</mtext><mtext>SG</mtext></msup></mrow><annotation encoding="application/x-tex">\text{FALP}^{\text{SG}}</annotation></semantics></math></span><span class="katex-html" aria-hidden="true"><span class="base"><span class="strut" style="height:0.9146em;"></span><span class="mord"><span class="mord text"><span class="mord">FALP</span></span><span class="msupsub"><span class="vlist-t"><span class="vlist-r"><span class="vlist" style="height:0.9146em;"><span style="top:-3.1362em;margin-right:0.05em;"><span class="pstrut" style="height:2.7em;"></span><span class="sizing reset-size6 size3 mtight"><span class="mord mtight"><span class="mord text mtight"><span class="mord mtight">SG</span></span></span></span></span></span></span></span></span></span></span></span></span></th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td style="text-align:center"></td>
+<td style="text-align:center"></td>
+<td style="text-align:center"></td>
+<td style="text-align:center"></td>
+<td style="text-align:center"></td>
+</tr>
+<tr>
+<td style="text-align:center">algo_name</td>
+<td style="text-align:center">FALP</td>
+<td style="text-align:center">FALP</td>
+<td style="text-align:center">PG-FALP</td>
+<td style="text-align:center">SG-FALP</td>
+</tr>
+<tr>
+<td style="text-align:center">basis_func_type</td>
+<td style="text-align:center">lns</td>
+<td style="text-align:center">fourier</td>
+<td style="text-align:center">fourier</td>
+<td style="text-align:center">fourier</td>
+</tr>
+<tr>
+<td style="text-align:center">max_basis_num</td>
+<td style="text-align:center">300</td>
+<td style="text-align:center">300</td>
+<td style="text-align:center">300</td>
+<td style="text-align:center">300</td>
+</tr>
+<tr>
+<td style="text-align:center">batch_size</td>
+<td style="text-align:center">300</td>
+<td style="text-align:center">300</td>
+<td style="text-align:center">50</td>
+<td style="text-align:center">300</td>
+</tr>
+<tr>
+<td style="text-align:center">state_relevance_inner_itr</td>
+<td style="text-align:center">0</td>
+<td style="text-align:center">0</td>
+<td style="text-align:center">0</td>
+<td style="text-align:center">5</td>
+</tr>
+<tr>
+<td style="text-align:center">instance_number</td>
+<td style="text-align:center">{13, 14,...,18}</td>
+<td style="text-align:center">{13, 14,...,18}</td>
+<td style="text-align:center">{13, 14,...,18}</td>
+<td style="text-align:center">{13, 14,...,18}</td>
+</tr>
+</tbody>
+</table>
+</li>
+</ul>
+<br>
+<ul>
+<li>
+<p><strong>Table 4:</strong> Compares four models <span class="katex"><span class="katex-mathml"><math xmlns="http://www.w3.org/1998/Math/MathML"><semantics><mrow><msup><mtext>ALP</mtext><mtext>LNS</mtext></msup></mrow><annotation encoding="application/x-tex">\text{ALP}^{\text{LNS}}</annotation></semantics></math></span><span class="katex-html" aria-hidden="true"><span class="base"><span class="strut" style="height:0.9146em;"></span><span class="mord"><span class="mord text"><span class="mord">ALP</span></span><span class="msupsub"><span class="vlist-t"><span class="vlist-r"><span class="vlist" style="height:0.9146em;"><span style="top:-3.1362em;margin-right:0.05em;"><span class="pstrut" style="height:2.7em;"></span><span class="sizing reset-size6 size3 mtight"><span class="mord mtight"><span class="mord text mtight"><span class="mord mtight">LNS</span></span></span></span></span></span></span></span></span></span></span></span></span>, <span class="katex"><span class="katex-mathml"><math xmlns="http://www.w3.org/1998/Math/MathML"><semantics><mrow><mtext>FALP</mtext></mrow><annotation encoding="application/x-tex">\text{FALP}</annotation></semantics></math></span><span class="katex-html" aria-hidden="true"><span class="base"><span class="strut" style="height:0.6833em;"></span><span class="mord text"><span class="mord">FALP</span></span></span></span></span> with <span class="katex"><span class="katex-mathml"><math xmlns="http://www.w3.org/1998/Math/MathML"><semantics><mrow><mn>600</mn></mrow><annotation encoding="application/x-tex">600</annotation></semantics></math></span><span class="katex-html" aria-hidden="true"><span class="base"><span class="strut" style="height:0.6444em;"></span><span class="mord">600</span></span></span></span> random basis functions,  <span class="katex"><span class="katex-mathml"><math xmlns="http://www.w3.org/1998/Math/MathML"><semantics><mrow><mtext>FALP</mtext></mrow><annotation encoding="application/x-tex">\text{FALP}</annotation></semantics></math></span><span class="katex-html" aria-hidden="true"><span class="base"><span class="strut" style="height:0.6833em;"></span><span class="mord text"><span class="mord">FALP</span></span></span></span></span> with <span class="katex"><span class="katex-mathml"><math xmlns="http://www.w3.org/1998/Math/MathML"><semantics><mrow><mn>1000</mn></mrow><annotation encoding="application/x-tex">1000</annotation></semantics></math></span><span class="katex-html" aria-hidden="true"><span class="base"><span class="strut" style="height:0.6444em;"></span><span class="mord">1000</span></span></span></span> random basis functions, and <span class="katex"><span class="katex-mathml"><math xmlns="http://www.w3.org/1998/Math/MathML"><semantics><mrow><msup><mtext>FALP</mtext><mtext>SG</mtext></msup></mrow><annotation encoding="application/x-tex">\text{FALP}^{\text{SG}}</annotation></semantics></math></span><span class="katex-html" aria-hidden="true"><span class="base"><span class="strut" style="height:0.9146em;"></span><span class="mord"><span class="mord text"><span class="mord">FALP</span></span><span class="msupsub"><span class="vlist-t"><span class="vlist-r"><span class="vlist" style="height:0.9146em;"><span style="top:-3.1362em;margin-right:0.05em;"><span class="pstrut" style="height:2.7em;"></span><span class="sizing reset-size6 size3 mtight"><span class="mord mtight"><span class="mord text mtight"><span class="mord mtight">SG</span></span></span></span></span></span></span></span></span></span></span></span></span> on 6 instances. To replicate this table, please run <code>run_PIC.sh</code> after modifying the following parameters:</p>
+<table>
+<thead>
+<tr>
+<th style="text-align:center">Parameter name in <code>run_PIC.sh</code></th>
+<th style="text-align:center"><span class="katex"><span class="katex-mathml"><math xmlns="http://www.w3.org/1998/Math/MathML"><semantics><mrow><msup><mtext>ALP</mtext><mtext>LNS</mtext></msup></mrow><annotation encoding="application/x-tex">\text{ALP}^{\text{LNS}}</annotation></semantics></math></span><span class="katex-html" aria-hidden="true"><span class="base"><span class="strut" style="height:0.9146em;"></span><span class="mord"><span class="mord text"><span class="mord">ALP</span></span><span class="msupsub"><span class="vlist-t"><span class="vlist-r"><span class="vlist" style="height:0.9146em;"><span style="top:-3.1362em;margin-right:0.05em;"><span class="pstrut" style="height:2.7em;"></span><span class="sizing reset-size6 size3 mtight"><span class="mord mtight"><span class="mord text mtight"><span class="mord mtight">LNS</span></span></span></span></span></span></span></span></span></span></span></span></span></th>
+<th style="text-align:center"><span class="katex"><span class="katex-mathml"><math xmlns="http://www.w3.org/1998/Math/MathML"><semantics><mrow><msub><mtext>FALP</mtext><mn>600</mn></msub></mrow><annotation encoding="application/x-tex">\text{FALP}_{600}</annotation></semantics></math></span><span class="katex-html" aria-hidden="true"><span class="base"><span class="strut" style="height:0.8333em;vertical-align:-0.15em;"></span><span class="mord"><span class="mord text"><span class="mord">FALP</span></span><span class="msupsub"><span class="vlist-t vlist-t2"><span class="vlist-r"><span class="vlist" style="height:0.3011em;"><span style="top:-2.55em;margin-right:0.05em;"><span class="pstrut" style="height:2.7em;"></span><span class="sizing reset-size6 size3 mtight"><span class="mord mtight"><span class="mord mtight">600</span></span></span></span></span><span class="vlist-s">​</span></span><span class="vlist-r"><span class="vlist" style="height:0.15em;"><span></span></span></span></span></span></span></span></span></span></th>
+<th style="text-align:center"><span class="katex"><span class="katex-mathml"><math xmlns="http://www.w3.org/1998/Math/MathML"><semantics><mrow><msub><mtext>FALP</mtext><mn>1000</mn></msub></mrow><annotation encoding="application/x-tex">\text{FALP}_{1000}</annotation></semantics></math></span><span class="katex-html" aria-hidden="true"><span class="base"><span class="strut" style="height:0.8333em;vertical-align:-0.15em;"></span><span class="mord"><span class="mord text"><span class="mord">FALP</span></span><span class="msupsub"><span class="vlist-t vlist-t2"><span class="vlist-r"><span class="vlist" style="height:0.3011em;"><span style="top:-2.55em;margin-right:0.05em;"><span class="pstrut" style="height:2.7em;"></span><span class="sizing reset-size6 size3 mtight"><span class="mord mtight"><span class="mord mtight">1000</span></span></span></span></span><span class="vlist-s">​</span></span><span class="vlist-r"><span class="vlist" style="height:0.15em;"><span></span></span></span></span></span></span></span></span></span></th>
+<th style="text-align:center"><span class="katex"><span class="katex-mathml"><math xmlns="http://www.w3.org/1998/Math/MathML"><semantics><mrow><msup><mtext>FALP</mtext><mtext>SG</mtext></msup></mrow><annotation encoding="application/x-tex">\text{FALP}^{\text{SG}}</annotation></semantics></math></span><span class="katex-html" aria-hidden="true"><span class="base"><span class="strut" style="height:0.9146em;"></span><span class="mord"><span class="mord text"><span class="mord">FALP</span></span><span class="msupsub"><span class="vlist-t"><span class="vlist-r"><span class="vlist" style="height:0.9146em;"><span style="top:-3.1362em;margin-right:0.05em;"><span class="pstrut" style="height:2.7em;"></span><span class="sizing reset-size6 size3 mtight"><span class="mord mtight"><span class="mord text mtight"><span class="mord mtight">SG</span></span></span></span></span></span></span></span></span></span></span></span></span></th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td style="text-align:center"></td>
+<td style="text-align:center"></td>
+<td style="text-align:center"></td>
+<td style="text-align:center"></td>
+<td style="text-align:center"></td>
+</tr>
+<tr>
+<td style="text-align:center">algo_name</td>
+<td style="text-align:center">FALP</td>
+<td style="text-align:center">FALP</td>
+<td style="text-align:center">PG-FALP</td>
+<td style="text-align:center">SG-FALP</td>
+</tr>
+<tr>
+<td style="text-align:center">basis_func_type</td>
+<td style="text-align:center">lns</td>
+<td style="text-align:center">fourier</td>
+<td style="text-align:center">fourier</td>
+<td style="text-align:center">fourier</td>
+</tr>
+<tr>
+<td style="text-align:center">max_basis_num</td>
+<td style="text-align:center">600</td>
+<td style="text-align:center">600</td>
+<td style="text-align:center">1000</td>
+<td style="text-align:center">600</td>
+</tr>
+<tr>
+<td style="text-align:center">batch_size</td>
+<td style="text-align:center">600</td>
+<td style="text-align:center">600</td>
+<td style="text-align:center">1000</td>
+<td style="text-align:center">100</td>
+</tr>
+<tr>
+<td style="text-align:center">state_relevance_inner_itr</td>
+<td style="text-align:center">0</td>
+<td style="text-align:center">0</td>
+<td style="text-align:center">0</td>
+<td style="text-align:center">0</td>
+</tr>
+<tr>
+<td style="text-align:center">instance_number</td>
+<td style="text-align:center">{19, 20, ..., 24}</td>
+<td style="text-align:center">{19, 20, ..., 24}</td>
+<td style="text-align:center">{19, 20, ..., 24}</td>
+<td style="text-align:center">{19, 20, ..., 24}</td>
+</tr>
+</tbody>
+</table>
+</li>
+</ul>
+<br>
+<ul>
+<li><strong>Figure 2:</strong> Depicts the violin plot of upper and lower bounds across 10 trials for 6 iterations of algorithm <span class="katex"><span class="katex-mathml"><math xmlns="http://www.w3.org/1998/Math/MathML"><semantics><mrow><msup><mtext>FALP</mtext><mtext>SG</mtext></msup></mrow><annotation encoding="application/x-tex">\text{FALP}^{\text{SG}}</annotation></semantics></math></span><span class="katex-html" aria-hidden="true"><span class="base"><span class="strut" style="height:0.9146em;"></span><span class="mord"><span class="mord text"><span class="mord">FALP</span></span><span class="msupsub"><span class="vlist-t"><span class="vlist-r"><span class="vlist" style="height:0.9146em;"><span style="top:-3.1362em;margin-right:0.05em;"><span class="pstrut" style="height:2.7em;"></span><span class="sizing reset-size6 size3 mtight"><span class="mord mtight"><span class="mord text mtight"><span class="mord mtight">SG</span></span></span></span></span></span></span></span></span></span></span></span></span> on two instances: Instance 19 and Instance 20. Upon running this algorithm on these instances, several files will be generated under the paths <code>Output/PIC/instance_19</code> and <code>Output/PIC/instance_20</code>. Then, one can use the plotting function in <code>SG_FALP_progress_plot.py</code> to obtain Figure 2 based on these files.</li>
+</ul>
+<br>
+<ul>
+<li><strong>Table 5:</strong> Presents performance of <span class="katex"><span class="katex-mathml"><math xmlns="http://www.w3.org/1998/Math/MathML"><semantics><mrow><mtext>LSM</mtext></mrow><annotation encoding="application/x-tex">\text{LSM}</annotation></semantics></math></span><span class="katex-html" aria-hidden="true"><span class="base"><span class="strut" style="height:0.6833em;"></span><span class="mord text"><span class="mord">LSM</span></span></span></span></span>, <span class="katex"><span class="katex-mathml"><math xmlns="http://www.w3.org/1998/Math/MathML"><semantics><mrow><msup><mtext>ALP</mtext><mtext>DFM</mtext></msup></mrow><annotation encoding="application/x-tex">\text{ALP}^{\text{DFM}}</annotation></semantics></math></span><span class="katex-html" aria-hidden="true"><span class="base"><span class="strut" style="height:0.9146em;"></span><span class="mord"><span class="mord text"><span class="mord">ALP</span></span><span class="msupsub"><span class="vlist-t"><span class="vlist-r"><span class="vlist" style="height:0.9146em;"><span style="top:-3.1362em;margin-right:0.05em;"><span class="pstrut" style="height:2.7em;"></span><span class="sizing reset-size6 size3 mtight"><span class="mord mtight"><span class="mord text mtight"><span class="mord mtight">DFM</span></span></span></span></span></span></span></span></span></span></span></span></span>, <span class="katex"><span class="katex-mathml"><math xmlns="http://www.w3.org/1998/Math/MathML"><semantics><mrow><mtext>FALP</mtext></mrow><annotation encoding="application/x-tex">\text{FALP}</annotation></semantics></math></span><span class="katex-html" aria-hidden="true"><span class="base"><span class="strut" style="height:0.6833em;"></span><span class="mord text"><span class="mord">FALP</span></span></span></span></span>, and <span class="katex"><span class="katex-mathml"><math xmlns="http://www.w3.org/1998/Math/MathML"><semantics><mrow><msup><mtext>FALP</mtext><mtext>SG</mtext></msup></mrow><annotation encoding="application/x-tex">\text{FALP}^{\text{SG}}</annotation></semantics></math></span><span class="katex-html" aria-hidden="true"><span class="base"><span class="strut" style="height:0.9146em;"></span><span class="mord"><span class="mord text"><span class="mord">FALP</span></span><span class="msupsub"><span class="vlist-t"><span class="vlist-r"><span class="vlist" style="height:0.9146em;"><span style="top:-3.1362em;margin-right:0.05em;"><span class="pstrut" style="height:2.7em;"></span><span class="sizing reset-size6 size3 mtight"><span class="mord mtight"><span class="mord text mtight"><span class="mord mtight">SG</span></span></span></span></span></span></span></span></span></span></span></span></span> on 9 instances. To obtain this table, please modify file <code>run_BerOpt.sh</code> by letting <strong>instance_number</strong> take values in {1, 2, ..., 9} and <strong>instance_number</strong> take values in {1, 2, ..., 9} and <strong>seed</strong>  to take values in {111, 222, 333, 444, 555, 666, 777, 888, 999, 1010}.</li>
+</ul>
+ <br>
+ <br>
+<h2 id="appendix">Appendix</h2>
+<p>This code has undergone testing on two systems:</p>
+<ul>
+<li>2021 MacBook Pro:
+<ul>
+<li>CPU: M1 Pro</li>
+<li>Memory: 16 GB</li>
+<li>OS: Mac OS 14.1.2</li>
+</ul>
+</li>
+<li>2022 Mac Studio:
+<ul>
+<li>CPU: M1 Max</li>
+<li>Memory: 64 GB</li>
+<li>OS: Mac OS 14.1.1</li>
+</ul>
+</li>
+</ul>
+<p>Below is the list of Python package versions utilized during the testing phase of this repository:</p>
+<table>
+<thead>
+<tr>
+<th style="text-align:right">Package</th>
+<th>Version</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td style="text-align:right">autograd</td>
+<td>1.6.2</td>
+</tr>
+<tr>
+<td style="text-align:right">emcee</td>
+<td>3.1.4</td>
+</tr>
+<tr>
+<td style="text-align:right">future</td>
+<td>0.18.3</td>
+</tr>
+<tr>
+<td style="text-align:right">gurobipy</td>
+<td>11.0.0</td>
+</tr>
+<tr>
+<td style="text-align:right">importlib</td>
+<td>1.0.4</td>
+</tr>
+<tr>
+<td style="text-align:right">llvmlite</td>
+<td>0.41.1</td>
+</tr>
+<tr>
+<td style="text-align:right">nengo</td>
+<td>4.0.0</td>
+</tr>
+<tr>
+<td style="text-align:right">numba</td>
+<td>0.58.1</td>
+</tr>
+<tr>
+<td style="text-align:right">numpy</td>
+<td>1.26.2</td>
+</tr>
+<tr>
+<td style="text-align:right">pandas</td>
+<td>2.1.4</td>
+</tr>
+<tr>
+<td style="text-align:right">pip</td>
+<td>23.3.1</td>
+</tr>
+<tr>
+<td style="text-align:right">python-dateutil</td>
+<td>2.8.2</td>
+</tr>
+<tr>
+<td style="text-align:right">pytz</td>
+<td>2023.3.post1</td>
+</tr>
+<tr>
+<td style="text-align:right">sampyl-mcmc</td>
+<td>0.3</td>
+</tr>
+<tr>
+<td style="text-align:right">scipy</td>
+<td>1.11.4</td>
+</tr>
+<tr>
+<td style="text-align:right">setuptools</td>
+<td>63.2.0</td>
+</tr>
+<tr>
+<td style="text-align:right">six</td>
+<td>1.16.0</td>
+</tr>
+<tr>
+<td style="text-align:right">tqdm</td>
+<td>4.66.1</td>
+</tr>
+<tr>
+<td style="text-align:right">tzdata</td>
+<td>2023.3</td>
+</tr>
+</tbody>
+</table>
+<hr>
+
+            <script async src="https://cdn.jsdelivr.net/npm/katex-copytex@latest/dist/katex-copytex.min.js"></script>
+            
+        </body>
+        </html>
