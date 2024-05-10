@@ -1,6 +1,6 @@
 # Self-guided Approximate Linear Programs
-###### **Last updated on:** `December 21, 2023`
-###### **Topics:** `approximate dynamic programming`, `approximate linear programming`, `model-based reinforcement learning`, `random Fourier features`, `inventory management`, `Options Pricing`.
+###### **Last updated on:** `May 10, 2024`
+###### **Topics:** `approximate dynamic programming`, `approximate linear programming`, `model-based reinforcement learning`, `random Fourier features`, `inventory management`, `options pricing`.
 ---
 
 
@@ -8,14 +8,14 @@
 
 ## What is this repository?
 
-This repository hosts algorithm implementations and benchmarks discussed in the paper 'Self-Guided Approximate Linear Programs: Randomized Multi-Shot Approximation of Discounted Cost Markov Decision Processes' authored by Parshan Pakiman, Selvaprabu Nadarajah, Negar Soheili, and Qihang Lin, available at [Management Science](https://ssrn.com/abstract=3512665). Specifcally, it includes implementations of following methods:    
+This repository hosts algorithm implementations and benchmarks discussed in the paper **Self-Guided Approximate Linear Programs: Randomized Multi-Shot Approximation of Discounted Cost Markov Decision Processes** authored by [Parshan Pakiman](https://parshanpakiman.github.io/), [Selva Nadarajah](https://selvan.people.uic.edu/), [Negar Soheili](https://business.uic.edu/profiles/negar-soheili/), and [Qihang Lin](https://tippie.uiowa.edu/people/qihang-lin), available at [Management Science](https://ssrn.com/abstract=3512665). Specifically, this repository includes implementations of the following algorithms for computing control policies in Markov decision processes (MDPs):
 
 - Feature-based Approximate Linear Program (FALP)
 - Self-guided FALP
 - Policy-guided FALP 
 - Least Squares Monte Carlo ([Longstaff and Schwartz 2001](https://doi.org/10.1093/rfs/14.1.113))
 
-Furthermore, the repository includes implementations of two algorithms for computing a lower bound on the optimal policy cost. Integrating this lower bound with an upper bound derived from simulating a control policy enables the computation of an optimality gap on the policy's performance. These algorithms are: Information Relaxation and Duality ([Brown et al. 2010](https://doi.org/10.1287/opre.1090.0796)), and a heuristic based on Constraint Violation Learning ([Lin et al. 2020](https://doi.org/10.1287/mnsc.2019.3289)). This repository enables the comparison of the aforementioned methods across two applications: perishable inventory control and Bermudan options pricing. Please note that the code provided here can be used to compute control policies and bounds for other Markov Decision Processes.
+Furthermore, the repository includes implementations of two algorithms for computing lower bounds on the MDP's optimal policy cost. These algorithms are Information Relaxation and Duality ([Brown et al. 2010](https://doi.org/10.1287/opre.1090.0796)), and a heuristic based on Constraint Violation Learning ([Lin et al. 2020](https://doi.org/10.1287/mnsc.2019.3289)). Integrating lower bounds from these methods with the upper bounds derived from simulating control policies enables the computation of optimality gaps. Moreover, this repository implements two MDPs for perishable inventory control and Bermudan options pricing applications. Please note that the code provided here can be used to compute control policies and bounds for other Markov Decision Processes.
 
 
 <br>
@@ -48,7 +48,7 @@ The following steps are tailored for macOS and Ubuntu users. Windows users may a
     source ALP/bin/activate
     ``` 
 
-7. This code relies on several Python packages. We utilize `pip` for their installation, but users have the flexibility to explore alternative methods. If choosing `pip`, please use the following code for its update:
+7. This code relies on several Python packages. We utilize `pip` for their installation, but users can explore alternative methods. If choosing `pip`, please use the following code for its update:
     ```
     pip install --upgrade pip
     ```
@@ -66,7 +66,7 @@ The following steps are tailored for macOS and Ubuntu users. Windows users may a
     - `nengo`
     - `gurobipy`
     
-    For instance, run the following command to install all the aforementioned libraries:
+    For instance, run the following command to install all the above libraries:
     ```
     python -m pip install numpy pandas scipy numba tqdm emcee sampyl importlib sampyl_mcmc nengo gurobipy
     ```
@@ -77,11 +77,11 @@ The following steps are tailored for macOS and Ubuntu users. Windows users may a
     grbgetkey xxxxxxxx-xxxx-xxxx-xxxx-xxxxxxxxxxxx
     ```
 
-10. Provided that the `ALP` environment and Gurobi are correctly installed, you can employ the following code to solve test instances of perishable inventory control application. Please run the following code:
+10. Provided that the `ALP` environment and Gurobi are correctly installed, you can employ the following code to solve test instances of perishable inventory control applications. Please run the following code:
     ```
     ./run_PIC.sh
     ```
-    The `run_PIC.sh` file solves the first instance of the perishable inventory control problem using the FALP algorithm with 20 random Fourier features, where FALP is fomrulated using a uniform state-relevance distribution (refer to the paper and code for details). You can find the specifications (e.g., cost parameters) of this instance under the path `MDP/PIC/Instances/instance_1.py`. To solve this instance using an alternate algorithm, you can modify the file `run_PIC.sh`. For instance, changing the `algo_name` from `FALP` to `SG-FALP` in this file and rerunning `run_PIC.sh` will display the output for the self-guided FALP algorithm applied to this instance. A screenshot of the output of these algorithms is attached below:
+    The `run_PIC.sh` file solves the first instance of the perishable inventory control problem using the FALP algorithm with 20 random Fourier features, where FALP is formulated using a uniform state-relevance distribution (refer to the paper and code for details). You can find the specifications (e.g., cost parameters) of this instance under the path `MDP/PIC/Instances/instance_1.py`. To solve this instance using an alternate algorithm, you can modify the file `run_PIC.sh`. For instance, changing the `algo_name` from `FALP` to `SG-FALP` in this file and rerunning `run_PIC.sh` will display the output for the self-guided FALP algorithm applied to this instance. A screenshot of the output of these algorithms is attached below:
     <img src="output.png">
 
 11.  To solve the test instance of Bermudan options pricing problem, please run `run_BerOpt.sh` file.
@@ -90,12 +90,12 @@ The following steps are tailored for macOS and Ubuntu users. Windows users may a
 
 ## How to adap this repository?
 
-To apply the algorithms from this repository to other problem instances or customize algorithm configurations, users should make adjustments within the `run_PIC.sh` and `run_BerOpt.sh` files. These files enable the modification of algorithm and simulation parameters. For example, a copy of `run_PIC.sh` is provided below:
+To apply the algorithms from this repository to other problem instances or customize algorithm configurations, users should make adjustments within the `run_PIC.sh` and `run_BerOpt.sh` files. These files enable the modification of the algorithm and simulation parameters. For example, a copy of `run_PIC.sh` is provided below:
 ```bash
 #!/usr/bin/env bash
 mdp_name                    ='PIC'
 algo_name                   ='FALP'             #FALP, PG-FALP, SG-FALP
-basis_func_type             ='fourier'          #relu, fourier, lns, stump
+basis_func_type             ='fourier'          #relu, Fourier, lns, stump
 max_num_constr              =200000
 max_basis_num               =20
 batch_size                  =5
