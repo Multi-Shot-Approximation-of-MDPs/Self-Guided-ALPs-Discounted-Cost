@@ -9,7 +9,7 @@
  
 ## Introduction
 
-This repository hosts algorithm implementations and benchmarks discussed in the paper **Self-Guided Approximate Linear Programs: Randomized Multi-Shot Approximation of Discounted Cost Markov Decision Processes** authored by [Parshan Pakiman](https://parshanpakiman.github.io/), [Selva Nadarajah](https://selvan.people.uic.edu/), [Negar Soheili](https://business.uic.edu/profiles/negar-soheili/), and [Qihang Lin](https://tippie.uiowa.edu/people/qihang-lin), available at [Management Science](https://ssrn.com/abstract=3512665). Specifically, this repository includes implementations of the following algorithms for computing control policies in Markov decision processes (MDPs):
+This repository hosts algorithm implementations and benchmarks discussed in the paper **Self-Guided Approximate Linear Programs: Randomized Multi-Shot Approximation of Discounted Cost Markov Decision Processes** authored by [Parshan Pakiman](https://parshanpakiman.github.io/), [Selva Nadarajah](https://selvan.people.uic.edu/), [Negar Soheili](https://business.uic.edu/profiles/negar-soheili/), and [Qihang Lin](https://tippie.uiowa.edu/people/qihang-lin), available at [Management Science](https://pubsonline.informs.org/doi/10.1287/mnsc.2020.00038). Specifically, this repository includes implementations of the following algorithms for computing control policies in Markov decision processes (MDPs):
 
 - Feature-based Approximate Linear Program (FALP)
 - Self-guided FALP
